@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KlawiaturaAG"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="KeyboardGA" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -18,13 +18,13 @@
             <ColumnDefinition Width="256"/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5,0,0" Foreground="Gray" Text="Klawiatura" Height="16" Width="55"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,5,0,0" Foreground="Black" Text="Klawiatura" Height="16" Width="55"/>
 
         <!-- Rectangle around the outside of the field containing the virtual keyboard-->
-        <Rectangle Margin="1,1,1,1" Stroke="Black" StrokeThickness="1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
+        <Rectangle Margin="1,1,1,1" StrokeThickness="1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Stroke="Gray" />
 
         <!-- Rectangle represening the edge of the keyboard -->
-        <Rectangle Margin="17,27,22,17" Stroke="Black" StrokeThickness="1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
+        <Rectangle Margin="17,27,22,17" StrokeThickness="1" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Stroke="Black" />
 
         <!-- Grid containing the keys of the keyboard -->
         <Grid Margin="20,30,25,20" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
@@ -198,12 +198,12 @@
         </Grid>
 
         <!-- Rectangle surrounding the field with the evaluation of the selected keyboard layout -->
-        <Rectangle Grid.Column="0" Grid.Row="2" Margin="1,1,1,0" VerticalAlignment="Top" Height="70" Stroke="Black"/>
+        <Rectangle Grid.Column="0" Grid.Row="2" Margin="1,1,1,0" VerticalAlignment="Top" Height="70" Stroke="Gray"/>
 
-        <TextBlock Grid.Column="0" Grid.Row="2" Margin="5,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="Gray" Text="Statystyki Klawiatury" Height="16" Width="108"/>
+        <TextBlock Grid.Column="0" Grid.Row="2" Margin="5,5,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Foreground="Black" Text="Statystyki Klawiatury" Height="16" Width="108"/>
 
         <!-- Grid containing the evaluation of the currently displayed keyboard (default is qwerty, btw) -->
-        <Rectangle Grid.Column="0" Grid.Row="2" Margin="8,23,8,0" VerticalAlignment="Top" Height="34" Stroke="Black"/>
+        <Rectangle Grid.Column="0" Grid.Row="2" Margin="8,23,8,0" VerticalAlignment="Top" Height="34" Stroke="Gray"/>
         <Grid Grid.Row="2" Grid.Column="0" Margin="10,25,10,0" VerticalAlignment="Top" Height="30">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -212,25 +212,27 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ComboBox Grid.Column="0" Margin="2,2,2,2"/>
-            <Rectangle Grid.Column="1" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Black"/>
-            <Rectangle Grid.Column="1" Margin="1,1,1,1" Stroke="Black"/>
+            <ComboBox x:Name="LayoutSelection" Grid.Column="0" Margin="2,2,2,2" SelectionChanged="LayoutSelection_SelectionChanged"/>
+            <Rectangle Grid.Column="1" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
+            <Rectangle Grid.Column="1" Margin="1,1,1,1" Stroke="Gray"/>
             <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Ocena:"/>
-            <Label Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0"/>
-            <Rectangle Grid.Column="3" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Black"/>
-            <Rectangle Grid.Column="3" Margin="1,1,1,1" Stroke="Black"/>
+            <Label x:Name="LayoutFitness" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0" Width="100"/>
+            <Rectangle Grid.Column="3" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
+            <Rectangle Grid.Column="3" Margin="1,1,1,1" Stroke="Gray"/>
             <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Klaw./QWERTY:"/>
-            <Label Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0"/>
+            <Label x:Name="LayoutVsQwerty" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0" Width="100"/>
         </Grid>
+
+        <Rectangle Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" Margin="1,73,1,1" Stroke="Gray"/>
 
         <Grid Grid.Column="0" Grid.Row="2" Grid.RowSpan="2" Margin="2,75,2,2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="6*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="7*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="15*"/>
@@ -238,20 +240,91 @@
                 <RowDefinition Height="20*"/>
             </Grid.RowDefinitions>
 
+            <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
             <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Ustawienia Populacji"/>
 
             <StackPanel Grid.Column="0" Grid.Row="1" Margin="2,2,2,2">
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Populacja:"/>
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Populacja:"/>
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Populacja:"/>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Liczebność:"/>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Ilość rodziców:"/>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Ilość dzieci:"/>
             </StackPanel>
-            
-            <Rectangle Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="6" Margin="1,1,1,1" Stroke="Black"/>
-            <ProgressBar Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="6" Margin="5,5,5,5"/>
+
+            <Grid Grid.Row="1" Grid.Column="1" Margin="2,2,2,2">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="47"/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="PopSizeBox" Grid.Row="0" Margin="1,1,1,1" Text="25" FontSize="10" VerticalAlignment="Center" Padding="0,-2,0,0"/>
+                <ComboBox x:Name="ParentsCBox" Grid.Row="1" Margin="1,1,1,1"/>
+                <ComboBox x:Name="ChildrenCBox" Grid.Row="2" Margin="1,1,1,1"/>
+            </Grid>
+
+            <Rectangle Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Ustawienia Rozrodu"/>
+
+            <StackPanel Grid.Column="2" Grid.Row="1" Margin="2,2,2,2">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Alg. wyboru:"/>
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Alg. krzyżowania:"/>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Rodzaj mutacji:"/>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Szansa mutacji:"/>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Rodzaj rezległ.:"/>
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Rozległość:"/>
+            </StackPanel>
+
+            <Grid Grid.Row="1" Grid.Column="3" Margin="2,2,2,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="5"/>
+                </Grid.RowDefinitions>
+                <ComboBox x:Name="ChoiceAlgorithmCBox" Grid.Row="0" Margin="1,1,1,1"/>
+                <ComboBox x:Name="CrossoverAlgorithmCBox" Grid.Row="1" Margin="1,1,1,1"/>
+                <ComboBox x:Name="MutationTypeCBox" Grid.Row="2" Margin="1,1,1,1"/>
+                <TextBox x:Name="MutationChanceBox" Grid.Row="3" Margin="1,1,45,1"/>
+                <ComboBox x:Name="MutationSevCBox" Grid.Row="4" Margin="1,1,1,1"/>
+                <TextBox x:Name="MutationSeverityBox" Grid.Row="5" Margin="1,1,45,1"/>
+            </Grid>
+
+            <Rectangle Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
+            <TextBlock Grid.Column="4" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Zachowanie"/>
+
+            <StackPanel Grid.Row="1" Grid.Column="4" Margin="1,1,1,1">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  Text="Zatrzymaj po:"/>
+                <RadioButton x:Name="PopStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="11" IsChecked="True" Content="pokoleniach"/>
+                <RadioButton x:Name="EpsStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="11" Content="poprawa &lt;"/>
+            </StackPanel>
+
+            <Grid Grid.Row="1" Grid.Column="5" Margin="1,1,1,1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                </Grid.RowDefinitions>
+                <TextBox x:Name="PopSizeStopConditionBox" Grid.Row="1" Margin="1,1,1,1" Text="25" FontSize="11" Padding="0,-2,0,0"/>
+                <TextBox x:Name="EpsValueBox" Grid.Row="2" Margin="1,1,1,1" Padding="0,-2,0,0"/>
+                <Button x:Name="SaveButton" Grid.Row="3" Margin="2,2,2,2" Content="Zapisz..." Click="SaveButton_Click"/>
+                <Button x:Name="StartButton" Grid.Row="4" Margin="2,2,2,2" Content="Start" Click="StartButton_Click"/>
+            </Grid>
+
+            <Rectangle Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="8" Margin="1,1,1,1" Stroke="Gray"/>
+            <ProgressBar x:Name="ProgressBar" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="7" Margin="5,5,5,5"/>
         </Grid>
 
-        <DataGrid Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5" d:ItemsSource="{d:SampleData ItemCount=20}"/>
-        <DataGrid Grid.Column="1" Grid.Row="2"  Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,5" d:ItemsSource="{d:SampleData ItemCount=20}"/>
+        <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Stroke="Gray" Margin="1,1,1,1"/>
+        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Margin="5,5,0,0" Foreground="Black" Text="Pokolenia"/>
+        <DataGrid x:Name="GenerationsDataGrid" Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,27,5,5" d:ItemsSource="{d:SampleData ItemCount=20}"/>
+        
+        <Rectangle Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Stroke="Gray" Margin="1,1,1,1"/>
+        <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Margin="5,5,0,0" Foreground="Black" Text="Chromosomy"/>
+        <DataGrid x:Name="ChromosomeDataGrid" Grid.Column="1" Grid.Row="2"  Grid.RowSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,25,5,5" d:ItemsSource="{d:SampleData ItemCount=20}"/>
 
     </Grid>
 </Window>
