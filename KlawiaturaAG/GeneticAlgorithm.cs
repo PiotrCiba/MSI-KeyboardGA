@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace KlawiaturaAG
 {
-    
+
     internal class GeneticAlgorithm
     {
         public static double FitnessFn(Chromosom input)
@@ -20,8 +16,9 @@ namespace KlawiaturaAG
                 {'S', 6.327}
             };
 
-            for (int i = 0; i < koszt.GetLength(0); i++) { 
-                for(int k = 0; k < koszt.GetLength(1); k++)
+            for (int i = 0; i < koszt.GetLength(0); i++)
+            {
+                for (int k = 0; k < koszt.GetLength(1); k++)
                 {
                     sum += koszt[i, k];
                 }
