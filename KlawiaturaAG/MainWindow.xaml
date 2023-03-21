@@ -4,6 +4,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        xmlns:local ="clr-namespace:KlawiaturaAG"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="KeyboardGA" Height="675" Width="1200">
     <Grid>
         <Grid.RowDefinitions>
@@ -212,19 +214,19 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Black" Text="Statystyki Klawiatury" Height="16" Width="108"/>
             <Rectangle Grid.Row="0" Grid.Column="0" Margin="2,2,2,2" Stroke="Gray"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="ID Klawiatury:"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="ID Klawiatury:" FontSize="20"/>
             <Rectangle Grid.Row="0" Grid.Column="1" Margin="2,2,2,2" Stroke="Gray"/>
-            <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Green" Content="QWERTY"/>
+            <Label Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Green" Content="QWERTY" FontSize="20"/>
             <Rectangle Grid.Row="0" Grid.Column="2" Margin="2,2,2,2" Stroke="Gray"/>
-            <ComboBox x:Name="LayoutSelection" Grid.Row="1" Grid.Column="0" Margin="2,2,2,2" SelectionChanged="LayoutSelection_SelectionChanged" FontSize="24"/>
+            <ComboBox x:Name="LayoutSelection" Grid.Row="1" Grid.Column="0" Margin="2,2,2,2" ItemsSource="{Binding Layouts}" SelectedItem="QWERTY" SelectionChanged="LayoutSelection_SelectionChanged" FontSize="20"/>
             <Rectangle Grid.Row="1" Grid.Column="1" Margin="2,2,2,2" Stroke="Gray"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Ocena:"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Ocena:" FontSize="20"/>
             <Rectangle Grid.Row="1" Grid.Column="2" Margin="2,2,2,2" Stroke="Gray"/>
-            <Label x:Name="LayoutFitness" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0" Width="100"/>
+            <Label x:Name="LayoutFitness" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0" Width="100" FontSize="20"/>
             <Rectangle Grid.Row="1" Grid.Column="3" Margin="2,2,2,2" Stroke="Gray"/>
-            <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Klaw./QWERTY:"/>
+            <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Klaw./QWERTY:" FontSize="20"/>
             <Rectangle Grid.Row="1" Grid.Column="4" Margin="2,2,2,2" Stroke="Gray"/>
-            <Label x:Name="LayoutVsQwerty" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0" Width="100"/>
+            <Label x:Name="LayoutVsQwerty" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="0" Width="100" FontSize="20"/>
         </Grid>
 
         <Rectangle Grid.Row="3" Grid.Column="0" Grid.RowSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
@@ -245,7 +247,7 @@
             </Grid.RowDefinitions>
 
             <Rectangle Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
-            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Ustawienia Populacji"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Ustawienia Populacji" FontSize="15"/>
 
             <Grid Grid.Row="1" Grid.Column="0" Margin="2,2,2,2">
                 <Grid.RowDefinitions>
@@ -254,9 +256,9 @@
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="7*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Liczebność:"/>
-                <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Ilość rodziców:"/>
-                <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Ilość dzieci:"/>
+                <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Liczebność:"/>
+                <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Ilość rodziców:"/>
+                <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Ilość dzieci:"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="1" Margin="2,2,2,2">
@@ -266,13 +268,13 @@
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="7*"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="PopSizeBox" Grid.Row="0" Margin="1,5,1,5" Text="25" FontSize="12" Padding="0,0,0,0" VerticalAlignment="Center"/>
-                <ComboBox x:Name="ParentsCBox" Grid.Row="1" Margin="1,1,1,1"/>
-                <ComboBox x:Name="ChildrenCBox" Grid.Row="2" Margin="1,1,1,1"/>
+                <TextBox x:Name="PopSizeBox" Grid.Row="0" Margin="1,5,1,5" Text="25" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ParentsCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding ParentValues}" SelectedIndex="1"/>
+                <ComboBox x:Name="ChildrenCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding ChildrenValues}" SelectedIndex="0"/>
             </Grid>
 
             <Rectangle Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
-            <TextBlock Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Ustawienia Rozrodu"/>
+            <TextBlock Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Ustawienia Rozrodu" FontSize="15"/>
 
             <Grid Grid.Row="1" Grid.Column="2" Margin="2,2,2,6">
                 <Grid.RowDefinitions>
@@ -283,12 +285,12 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Alg. wyboru:"/>
-                <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="11" Text="Alg. krzyżowania:"/>
-                <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Rodzaj mutacji:"/>
-                <TextBlock Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Szansa mutacji:"/>
-                <TextBlock Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Rodzaj rezległ.:"/>
-                <TextBlock Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="11" Text="Rozległość:"/>
+                <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Alg. wyboru:"/>
+                <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Alg. krzyżowania:"/>
+                <TextBlock Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Text="Rodzaj mutacji:"/>
+                <TextBlock Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Text="Szansa mutacji:"/>
+                <TextBlock Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Text="Rodzaj rezległ.:"/>
+                <TextBlock Grid.Row="5" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Text="Rozległość:"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="3" Margin="2,2,2,6">
@@ -300,16 +302,16 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="ChoiceAlgorithmCBox" Grid.Row="0" Margin="1,1,1,1"/>
-                <ComboBox x:Name="CrossoverAlgorithmCBox" Grid.Row="1" Margin="1,1,1,1"/>
-                <ComboBox x:Name="MutationTypeCBox" Grid.Row="2" Margin="1,1,1,1"/>
-                <TextBox x:Name="MutationChanceBox" Grid.Row="3" Margin="1,1,45,1" FontSize="12" Padding="0,0,0,0" VerticalAlignment="Center"/>
-                <ComboBox x:Name="MutationSevCBox" Grid.Row="4" Margin="1,1,1,1"/>
-                <TextBox x:Name="MutationSeverityBox" Grid.Row="5" Margin="1,1,45,1" FontSize="12" Padding="0,0,0,0" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ChoiceAlgorithmCBox" Grid.Row="0" Margin="1,1,1,1" ItemsSource="{Binding SelectionAlgorithms}" SelectedIndex="0"/>
+                <ComboBox x:Name="CrossoverAlgorithmCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding CrossoverAlgorithms}" SelectedIndex="0"/>
+                <ComboBox x:Name="MutationTypeCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding MutationAlgorithms}" SelectedIndex="0"/>
+                <TextBox x:Name="MutationChanceBox" Grid.Row="3" Margin="1,1,45,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"  Text="0.01" />
+                <ComboBox x:Name="MutationSevCBox" Grid.Row="4" Margin="1,1,1,1" ItemsSource="{Binding SeverityTypes}" SelectedIndex="0"/>
+                <TextBox x:Name="MutationSeverityBox" Grid.Row="5" Margin="1,1,45,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"  Text="1" />
             </Grid>
 
             <Rectangle Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
-            <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Zachowanie"/>
+            <TextBlock Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="Zachowanie" FontSize="15"/>
 
             <Grid Grid.Row="1" Grid.Column="4" Margin="1,1,1,1">
                 <Grid.RowDefinitions>
@@ -319,9 +321,9 @@
                     <RowDefinition Height="3.4*"/>
                     <RowDefinition Height="3.4*"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"  Text="Zatrzymaj po:"/>
-                <RadioButton Grid.Row="1" x:Name="PopStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="11" IsChecked="True" Content="pokoleniach"/>
-                <RadioButton Grid.Row="2" x:Name="EpsStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="11" Content="poprawa &lt;"/>
+                <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"  Text="Zatrzymaj po:"/>
+                <RadioButton Grid.Row="1" x:Name="PopStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" IsChecked="True" Content="pokoleniach"/>
+                <RadioButton Grid.Row="2" x:Name="EpsStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="poprawa &lt;"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="5" Margin="1,1,1,1">
@@ -332,8 +334,8 @@
                     <RowDefinition Height="3.4*"/>
                     <RowDefinition Height="3.4*"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="PopSizeStopConditionBox" Grid.Row="1" Margin="1,1,1,1" FontSize="12" Padding="0,0,0,0" VerticalAlignment="Center" Text="25"/>
-                <TextBox x:Name="EpsValueStopConditionBox" Grid.Row="2" Margin="1,1,1,1" FontSize="12" Padding="0,0,0,0" VerticalAlignment="Center"/>
+                <TextBox x:Name="PopSizeStopConditionBox" Grid.Row="1" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="25"/>
+                <TextBox x:Name="EpsValueStopConditionBox" Grid.Row="2" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="0.01"/>
                 <Button x:Name="SaveButton" Grid.Row="3" Margin="2,2,2,2" Content="Zapisz..." Click="SaveButton_Click"/>
                 <Button x:Name="StartButton" Grid.Row="4" Margin="2,2,2,2" Content="Start" Click="StartButton_Click"/>
             </Grid>
