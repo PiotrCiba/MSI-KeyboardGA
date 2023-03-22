@@ -2,17 +2,17 @@
 
 namespace KlawiaturaAG
 {
-    internal class Chromosom
+    public class Chromosom
     {
-        string[] layout { get; set; }
+        string[] layout { get; set; } = { "-=", "QWERTYUIOP[]", "ASDFGHJKL;'", "ZXCVBNM,.?" };
         public void randomise()
         {
             Random rnd = new Random();
 
         }
-        public char getLetter(int row, int col)
+        public string[] getLayout()
         {
-            return layout[row][col];
+            return layout;
         }
     }
 }
