@@ -1,9 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 
 namespace KlawiaturaAG
 {
-
+    public enum Selections
+    {
+        Tournament = 0,
+        Roulette = 1
+    }
+    public enum Crossovers
+    {
+        OX = 0,
+        ERX = 1
+    }
+    public enum Mutations
+    {
+        PairSwap = 0, 
+        PartialScramble = 1
+    }
+    public enum MutationSeverities
+    {
+        Random = 0, 
+        Continuous = 1
+    }
     public class GeneticAlgorithm
     {
         private Chromosom[] rodzice;
@@ -11,23 +33,75 @@ namespace KlawiaturaAG
 
         public GeneticAlgorithm()
         {
-            rodzice = new Chromosom[1];
-            rodzice[0] = new Chromosom();
-            dzieci = new Chromosom[1];
-            dzieci[0] = new Chromosom();
+            rodzice = new Chromosom[0];
+            dzieci = new Chromosom[0];
         }
         public GeneticAlgorithm(int popsize)
         {
             rodzice = new Chromosom[popsize];
-            for(int i=0;i<popsize;i++)
+            dzieci = new Chromosom[popsize];
+
+            Random rand = new Random();
+
+            for(int i = 0; i<popsize;i++)
             {
                 rodzice[i] = new Chromosom();
+                char[] chars = LayoutToString(rodzice[i].layout).ToCharArray();
+                for(int k = 0; k < chars.Length; k++)
+                {
+                    int randIndex = rand.Next(chars.Length);
+                    char temp = chars[k];
+                    chars[k] = chars[randIndex];
+                    chars[randIndex] = temp;
+                }
+                rodzice[i].layout = StringToLayout(new string(chars));
             }
-            dzieci = new Chromosom[popsize];
-            for (int i = 0; i < popsize; i++)
+        }
+        /*public int popSize { get; set; } = 25;
+        public int parentNumber { get; set; } = 2;
+        public int childNumber { get; set; } = 1;
+        public Selections currSel { get; set; } = Selections.Tournament;
+        public Crossovers currX { get; set; } = Crossovers.OX;
+        public Mutations currMut { get; set; } = Mutations.PairSwap;
+        public double mutChance { get; set; } = 0.01;
+        public MutationSeverities currMutSev {get;set;} = MutationSeverities.Random;
+        public int mutSeverity { get; set; } = 1;
+        public int popsToRun { get; set; } = 25;
+        public double epsToStopAt { get; set; } = 0.01;
+        public int currStopMode { get; set; } = 0;*/
+        public (List<Summary>, Chromosom[]) StartNoMemory(int parentNumber, int childNumber, Selections currSel, Crossovers currX, 
+                                                      Mutations currMut, double mutChance, MutationSeverities currMutSev, int mutSeverity,
+                                                      int currStopMode, int popsToRun, double epsToStopAt) {
+            List<Summary> GenSummaries = new List<Summary>();
+            Chromosom[] Generation = new Chromosom[rodzice.Length];
+
+            bool breakCondition = false;
+            int gen = 0;
+
+            do{ 
+            
+            }while (!breakCondition);
+            
+
+            return (GenSummaries,Generation);
+        }
+
+        public (List<Summary>, List<Chromosom[]>) StartFullMemory(int parentNumber, int childNumber, Selections currSel, Crossovers currX, 
+                                                          Mutations currMut, double mutChance, MutationSeverities currMutSev, int mutSeverity, 
+                                                          int currStopMode, int popsToRun, double epsToStopAt){
+            List<Summary> GenSummaries = new List<Summary>();
+            List<Chromosom[]> Generation = new List<Chromosom[]>();
+
+            bool breakCondition = false;
+            int gen = 0;
+
+            do
             {
-                dzieci[i] = new Chromosom();
-            }
+
+            } while (!breakCondition);
+
+
+            return (GenSummaries, Generation);
         }
 
         public static double Fn(string[] input)
@@ -67,6 +141,19 @@ namespace KlawiaturaAG
             //zwracanie sumy
             return sum;
         }
-
+        public static string LayoutToString(string[] input)
+        {
+            return string.Join("", input);
+        }
+        public static string[] StringToLayout(string input)
+        {
+            string[] output = new string[4];
+            output[0] = input.Substring(0, 2);
+            output[1] = input.Substring(2, 12);
+            output[2] = input.Substring(14, 11);
+            output[3] = input.Substring(25, 10);
+            return output;
+        }
+        
     }
 }

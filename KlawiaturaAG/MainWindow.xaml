@@ -268,9 +268,9 @@
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="7*"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="PopSizeBox" Grid.Row="0" Margin="1,5,1,5" Text="25" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"/>
-                <ComboBox x:Name="ParentsCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding ParentValues}" SelectedIndex="1"/>
-                <ComboBox x:Name="ChildrenCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding ChildrenValues}" SelectedIndex="0"/>
+                <TextBox x:Name="PopSizeBox" Grid.Row="0" Margin="1,5,1,5" Text="25" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" TextChanged="PopSizeBox_TextChanged"/>
+                <ComboBox x:Name="ParentsCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding ParentValues}" SelectedIndex="1" SelectionChanged="ParentsCBox_SelectionChanged"/>
+                <ComboBox x:Name="ChildrenCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding ChildrenValues}" SelectedIndex="0" SelectionChanged="ChildrenCBox_SelectionChanged"/>
             </Grid>
 
             <Rectangle Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
@@ -302,12 +302,12 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
-                <ComboBox x:Name="ChoiceAlgorithmCBox" Grid.Row="0" Margin="1,1,1,1" ItemsSource="{Binding SelectionAlgorithms}" SelectedIndex="0"/>
-                <ComboBox x:Name="CrossoverAlgorithmCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding CrossoverAlgorithms}" SelectedIndex="0"/>
-                <ComboBox x:Name="MutationTypeCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding MutationAlgorithms}" SelectedIndex="0"/>
-                <TextBox x:Name="MutationChanceBox" Grid.Row="3" Margin="1,1,45,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"  Text="0.01" />
-                <ComboBox x:Name="MutationSevCBox" Grid.Row="4" Margin="1,1,1,1" ItemsSource="{Binding SeverityTypes}" SelectedIndex="0"/>
-                <TextBox x:Name="MutationSeverityBox" Grid.Row="5" Margin="1,1,45,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"  Text="1" />
+                <ComboBox x:Name="ChoiceAlgorithmCBox" Grid.Row="0" Margin="1,1,1,1" ItemsSource="{Binding SelectionAlgorithms}" SelectedIndex="0" SelectionChanged="ChoiceAlgorithmCBox_SelectionChanged"/>
+                <ComboBox x:Name="CrossoverAlgorithmCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding CrossoverAlgorithms}" SelectedIndex="0" SelectionChanged="CrossoverAlgorithmCBox_SelectionChanged"/>
+                <ComboBox x:Name="MutationTypeCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding MutationAlgorithms}" SelectedIndex="0" SelectionChanged="MutationTypeCBox_SelectionChanged"/>
+                <TextBox x:Name="MutationChanceBox" Grid.Row="3" Margin="1,1,45,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"  Text="0,01" TextChanged="MutationChanceBox_TextChanged" />
+                <ComboBox x:Name="MutationSevCBox" Grid.Row="4" Margin="1,1,1,1" ItemsSource="{Binding SeverityTypes}" SelectedIndex="0" SelectionChanged="MutationSevCBox_SelectionChanged"/>
+                <TextBox x:Name="MutationSeverityBox" Grid.Row="5" Margin="1,1,45,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center"  Text="1" TextChanged="MutationSeverityBox_TextChanged" />
             </Grid>
 
             <Rectangle Grid.Row="0" Grid.Column="4" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>
@@ -318,12 +318,13 @@
                     <RowDefinition Height="2.2*"/>
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="2*"/>
-                    <RowDefinition Height="3.4*"/>
-                    <RowDefinition Height="3.4*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="4.4*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"  Text="Zatrzymaj po:"/>
-                <RadioButton Grid.Row="1" x:Name="PopStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" IsChecked="True" Content="pokoleniach"/>
-                <RadioButton Grid.Row="2" x:Name="EpsStopChoice" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="poprawa &lt;"/>
+                <RadioButton Grid.Row="1" x:Name="PopStopChoice" GroupName="stopChoiceRB" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" IsChecked="True" Content="pokoleniach" Checked="PopStopChoice_Checked"/>
+                <RadioButton Grid.Row="2" x:Name="EpsStopChoice" GroupName="stopChoiceRB" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="poprawa &lt;" Checked="EpsStopChoice_Checked"/>
+                <CheckBox Grid.Row="3" x:Name="IsFullMemory" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="Run FullMemory?"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="5" Margin="1,1,1,1">
@@ -335,8 +336,8 @@
                     <RowDefinition Height="3.4*"/>
                 </Grid.RowDefinitions>
                 <TextBox x:Name="PopSizeStopConditionBox" Grid.Row="1" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="25"/>
-                <TextBox x:Name="EpsValueStopConditionBox" Grid.Row="2" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="0.01"/>
-                <Button x:Name="SaveButton" Grid.Row="3" Margin="2,2,2,2" Content="Zapisz..." Click="SaveButton_Click"/>
+                <TextBox x:Name="EpsValueStopConditionBox" Grid.Row="2" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="0,01"/>
+                <Button x:Name="SaveButton" Grid.Row="3" Margin="2,2,2,2" Content="Zapisz..."/>
                 <Button x:Name="StartButton" Grid.Row="4" Margin="2,2,2,2" Content="Start" Click="StartButton_Click"/>
             </Grid>
 

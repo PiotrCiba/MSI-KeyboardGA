@@ -4,15 +4,8 @@ namespace KlawiaturaAG
 {
     public class Chromosom
     {
-        string[] layout { get; set; } = { "-=", "QWERTYUIOP[]", "ASDFGHJKL;'", "ZXCVBNM,.?" };
-        public void randomise()
-        {
-            Random rnd = new Random();
-
-        }
-        public string[] getLayout()
-        {
-            return layout;
-        }
+        public string LayoutID { get; set; } = "";
+        public string[] layout { get; set; } = { "-=", "QWERTYUIOP[]", "ASDFGHJKL;'", "ZXCVBNM,.?" };
+        public double fitness { get; set; } = 0;
     }
 }

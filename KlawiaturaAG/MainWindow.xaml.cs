@@ -11,6 +11,7 @@ namespace KlawiaturaAG
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        //Window binding fields
         public string[] CurrentLayout { get; set; } = { "-=", "QWERTYUIOP[]", "ASDFGHJKL;'", "ZXCVBNM,.?" };
         public string[] Layouts { get; set; } = { "QWERTY", "Dvorak", "ARENSITO", "Colemak", "Workman", "<Selected>" };
 
@@ -19,14 +20,29 @@ namespace KlawiaturaAG
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ParentValues { get; set; } = { 1, 2 };
         public int[] ChildrenValues { get; set; } = { 1, 2 };
-        public string[] SelectionAlgorithms { get; set; } = {"Turniej", "Ruletka"};
+        public string[] SelectionAlgorithms { get; set; } = { "Turniej", "Ruletka" };
         public string[] CrossoverAlgorithms { get; set; } = { "OX", "ERX" };
         public string[] MutationAlgorithms { get; set; } = { "Pair Swap", "Partial Scramble" };
-        public string[] SeverityTypes { get; set; } = {"Random", "Continuous", "Spread" };
+        public string[] SeverityTypes { get; set; } = { "Random", "Continuous" };
 
         GeneticAlgorithm GA = new GeneticAlgorithm();
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        //GA's starting values, to be set upt before strting the algorithm
+        public int popSize { get; set; } = 25;
+        public int parentNumber { get; set; } = 2;
+        public int childNumber { get; set; } = 1;
+        public Selections currSel { get; set; } = Selections.Tournament;
+        public Crossovers currX { get; set; } = Crossovers.OX;
+        public Mutations currMut { get; set; } = Mutations.PairSwap;
+        public double mutChance { get; set; } = 0.01;
+        public MutationSeverities currMutSev {get;set;} = MutationSeverities.Random;
+        public int mutSeverity { get; set; } = 1;
+        public int popsToRun { get; set; } = 25;
+        public double epsToStopAt { get; set; } = 0.01;
+        public int currStopMode { get; set; } = 0;
+
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
         {
@@ -124,13 +140,72 @@ namespace KlawiaturaAG
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
+                GA = new GeneticAlgorithm(popSize);
 
+                if (IsFullMemory.IsChecked == true)
+                {
+
+                }
+                else
+                {
+
+                }
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void PopSizeBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            popSize =  int.Parse(PopSizeBox.Text);
         }
 
+        private void ParentsCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            parentNumber = ParentValues[ParentsCBox.SelectedIndex];
+        }
+
+        private void ChildrenCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            childNumber = ChildrenValues[ChildrenCBox.SelectedIndex];
+        }
+
+        private void ChoiceAlgorithmCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            currSel = (Selections)ChoiceAlgorithmCBox.SelectedIndex;
+        }
+
+        private void CrossoverAlgorithmCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            currX = (Crossovers)CrossoverAlgorithmCBox.SelectedIndex;
+        }
+
+        private void MutationTypeCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            currMut = (Mutations)MutationTypeCBox.SelectedIndex;
+        }
+
+        private void MutationChanceBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            mutChance = double.Parse(MutationChanceBox.Text);
+        }
+
+        private void MutationSevCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            currMutSev = (MutationSeverities)MutationSevCBox.SelectedIndex;
+        }
+
+        private void MutationSeverityBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            mutSeverity = int.Parse(MutationSeverityBox.Text);
+        }
+
+        private void PopStopChoice_Checked(object sender, RoutedEventArgs e)
+        {
+            currStopMode = 0;
+        }
+
+        private void EpsStopChoice_Checked(object sender, RoutedEventArgs e)
+        {
+            currStopMode = 1;
+        }
     }
 }
+
