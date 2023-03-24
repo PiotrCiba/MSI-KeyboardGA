@@ -3,8 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        xmlns:local ="clr-namespace:KlawiaturaAG"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="KeyboardGA" Height="675" Width="1200">
     <Grid>
@@ -53,6 +53,8 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
+            <Button x:Name="ShowCostButton" Grid.Row="0" Grid.Column="0" Margin="10,10,10,10" ClickMode="Release" Content="Punktacja" Click="ShowCostButton_Click"/>
+
             <!-- 0-th Row of the virtual keyboard -->
             <!-- Adding rectangles as keys -->
             <Rectangle Grid.Row="0" Grid.Column="1" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
@@ -65,8 +67,8 @@
             <Rectangle Grid.Row="0" Grid.Column="8" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,2,1" Fill="LightGray"/>
             <Rectangle Grid.Row="0" Grid.Column="9" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
             <Rectangle Grid.Row="0" Grid.Column="10" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
-            <Rectangle Grid.Row="0" Grid.Column="11" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
-            <Rectangle Grid.Row="0" Grid.Column="12" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
+            <Rectangle x:Name="Rect_00" Grid.Row="0" Grid.Column="11" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
+            <Rectangle x:Name="Rect_01" Grid.Row="0" Grid.Column="12" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
             <Rectangle Grid.Row="0" Grid.Column="13" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
 
             <!-- Adding text into the keys, 0-th row-->
@@ -87,18 +89,18 @@
             <!-- First Row of the virtual keyboard -->
             <!-- Adding rectangles as keys -->
             <Rectangle Grid.Row="1" Grid.Column="0" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
-            <Rectangle Grid.Row="1" Grid.Column="1" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="2" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="3" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="4" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="5" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="6" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="7" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="8" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="9" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="10" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="1" Grid.Column="11" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
-            <Rectangle Grid.Row="1" Grid.Column="12" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
+            <Rectangle x:Name="Rect_Q" Grid.Row="1" Grid.Column="1" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_W" Grid.Row="1" Grid.Column="2" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_E" Grid.Row="1" Grid.Column="3" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_R" Grid.Row="1" Grid.Column="4" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_T" Grid.Row="1" Grid.Column="5" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_Y" Grid.Row="1" Grid.Column="6" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_U" Grid.Row="1" Grid.Column="7" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_I" Grid.Row="1" Grid.Column="8" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_O" Grid.Row="1" Grid.Column="9" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_P" Grid.Row="1" Grid.Column="10" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_10" Grid.Row="1" Grid.Column="11" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
+            <Rectangle x:Name="Rect_11" Grid.Row="1" Grid.Column="12" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
 
             <!-- Adding text into the keys, first row-->
             <Label Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Content="TAB" />
@@ -118,17 +120,17 @@
             <!-- Tird Row of the virtual keyboard -->
             <!-- Adding rectangles as keys -->
             <Rectangle Grid.Row="2" Grid.Column="0" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
-            <Rectangle Grid.Row="2" Grid.Column="1" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="2" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="3" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="4" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="5" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="6" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="7" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="8" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="9" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="2" Grid.Column="10" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" />
-            <Rectangle Grid.Row="2" Grid.Column="11" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
+            <Rectangle x:Name="Rect_A" Grid.Row="2" Grid.Column="1" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_S" Grid.Row="2" Grid.Column="2" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_D" Grid.Row="2" Grid.Column="3" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_F" Grid.Row="2" Grid.Column="4" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_G" Grid.Row="2" Grid.Column="5" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_H" Grid.Row="2" Grid.Column="6" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_J" Grid.Row="2" Grid.Column="7" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_K" Grid.Row="2" Grid.Column="8" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_L" Grid.Row="2" Grid.Column="9" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_20" Grid.Row="2" Grid.Column="10" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" />
+            <Rectangle x:Name="Rect_21" Grid.Row="2" Grid.Column="11" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
             <Rectangle Grid.Row="2" Grid.Column="12" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Grid.ColumnSpan="2" Fill="LightGray"/>
 
             <!-- Adding text into the keys, second row-->
@@ -149,16 +151,16 @@
             <!-- Fourth Row of the virtual keyboard -->
             <!-- Adding rectangles as keys -->
             <Rectangle Grid.Row="3" Grid.Column="0" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Fill="LightGray"/>
-            <Rectangle Grid.Row="3" Grid.Column="1" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="2" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="3" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="4" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="5" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="6" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="7" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="8" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,2,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="9" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
-            <Rectangle Grid.Row="3" Grid.Column="10" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_Z" Grid.Row="3" Grid.Column="1" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_X" Grid.Row="3" Grid.Column="2" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_C" Grid.Row="3" Grid.Column="3" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_V" Grid.Row="3" Grid.Column="4" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_B" Grid.Row="3" Grid.Column="5" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_N" Grid.Row="3" Grid.Column="6" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_M" Grid.Row="3" Grid.Column="7" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_30" Grid.Row="3" Grid.Column="8" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,2,1"/>
+            <Rectangle x:Name="Rect_31" Grid.Row="3" Grid.Column="9" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
+            <Rectangle x:Name="Rect_32" Grid.Row="3" Grid.Column="10" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1"/>
             <Rectangle Grid.Row="3" Grid.Column="11" StrokeThickness="1" Stroke="Black" RadiusY="3" RadiusX="3" Margin="1,1,1,1" Grid.ColumnSpan="3" Fill="LightGray"/>
 
             <!-- Adding text into the keys, third row-->
@@ -257,8 +259,7 @@
                     <RowDefinition Height="7*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Liczebność:"/>
-                <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Ilość rodziców:"/>
-                <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Ilość dzieci:"/>
+                <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Ilość dzieci:"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="1" Margin="2,2,2,2">
@@ -269,8 +270,7 @@
                     <RowDefinition Height="7*"/>
                 </Grid.RowDefinitions>
                 <TextBox x:Name="PopSizeBox" Grid.Row="0" Margin="1,5,1,5" Text="25" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" TextChanged="PopSizeBox_TextChanged"/>
-                <ComboBox x:Name="ParentsCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding ParentValues}" SelectedIndex="1" SelectionChanged="ParentsCBox_SelectionChanged"/>
-                <ComboBox x:Name="ChildrenCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding ChildrenValues}" SelectedIndex="0" SelectionChanged="ChildrenCBox_SelectionChanged"/>
+                <ComboBox x:Name="ChildrenCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding ChildrenValues}" SelectedIndex="0" SelectionChanged="ChildrenCBox_SelectionChanged"/>
             </Grid>
 
             <Rectangle Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>

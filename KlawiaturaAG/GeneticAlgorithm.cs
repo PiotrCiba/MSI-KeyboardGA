@@ -1,43 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 
 namespace KlawiaturaAG
 {
-    public enum Selections
-    {
-        Tournament = 0,
-        Roulette = 1
-    }
-    public enum Crossovers
-    {
-        OX = 0,
-        ERX = 1
-    }
-    public enum Mutations
-    {
-        PairSwap = 0, 
-        PartialScramble = 1
-    }
-    public enum MutationSeverities
-    {
-        Random = 0, 
-        Continuous = 1
-    }
     public class GeneticAlgorithm
     {
-        private Chromosom[] rodzice;
-        private Chromosom[] dzieci;
+        /*public int popSize { get; set; } = 25;
+        public int parentNumber { get; set; } = 2;
+        public int childNumber { get; set; } = 1;
+        public Selections currSel { get; set; } = Selections.Tournament;
+        public Crossovers currX { get; set; } = Crossovers.OX;
+        public Mutations currMut { get; set; } = Mutations.PairSwap;
+        public double mutChance { get; set; } = 0.01;
+        public MutationSeverities currMutSev {get;set;} = MutationSeverities.Random;
+        public int mutSeverity { get; set; } = 1;
+        public int popsToRun { get; set; } = 25;
+        public double epsToStopAt { get; set; } = 0.01;
+        public int currStopMode { get; set; } = 0;*/
 
-        public GeneticAlgorithm()
-        {
-            rodzice = new Chromosom[0];
-            dzieci = new Chromosom[0];
-        }
-        public GeneticAlgorithm(int popsize)
-        {
+        /*
             rodzice = new Chromosom[popsize];
             dzieci = new Chromosom[popsize];
 
@@ -56,38 +41,37 @@ namespace KlawiaturaAG
                 }
                 rodzice[i].layout = StringToLayout(new string(chars));
             }
-        }
-        /*public int popSize { get; set; } = 25;
-        public int parentNumber { get; set; } = 2;
-        public int childNumber { get; set; } = 1;
-        public Selections currSel { get; set; } = Selections.Tournament;
-        public Crossovers currX { get; set; } = Crossovers.OX;
-        public Mutations currMut { get; set; } = Mutations.PairSwap;
-        public double mutChance { get; set; } = 0.01;
-        public MutationSeverities currMutSev {get;set;} = MutationSeverities.Random;
-        public int mutSeverity { get; set; } = 1;
-        public int popsToRun { get; set; } = 25;
-        public double epsToStopAt { get; set; } = 0.01;
-        public int currStopMode { get; set; } = 0;*/
-        public (List<Summary>, Chromosom[]) StartNoMemory(int parentNumber, int childNumber, Selections currSel, Crossovers currX, 
-                                                      Mutations currMut, double mutChance, MutationSeverities currMutSev, int mutSeverity,
-                                                      int currStopMode, int popsToRun, double epsToStopAt) {
-            List<Summary> GenSummaries = new List<Summary>();
-            Chromosom[] Generation = new Chromosom[rodzice.Length];
+         */
 
+
+        public (List<Summary>, Chromosom[]) StartNoMemory(int popsize, int childNumber, int currSel, int currX,
+                                                      int currMut, double mutChance, int currMutSev, int mutSeverity,
+                                                      int currStopMode, int popsToRun, double epsToStopAt) {
+            //preparing the output variable;
+            List<Summary> GenSummaries = new List<Summary>();
+            //two generations that we're working with
+            Chromosom[] Parents = new Chromosom[popsize];
+            Chromosom[] Children = new Chromosom[popsize];
+            //prepping Parents, random scramble
+            for (int i = 0; i < popsize; i++)
+                Parents[i] = new Chromosom();
+            Parents = ScrambleParentsLayouts(Parents);
+
+            //dowhile control variables breakcondition to exit, get to count generations (for generation number exit)
             bool breakCondition = false;
             int gen = 0;
 
-            do{ 
-            
+            do{
+
+                
             }while (!breakCondition);
             
 
-            return (GenSummaries,Generation);
+            return (GenSummaries,Parents);
         }
 
-        public (List<Summary>, List<Chromosom[]>) StartFullMemory(int parentNumber, int childNumber, Selections currSel, Crossovers currX, 
-                                                          Mutations currMut, double mutChance, MutationSeverities currMutSev, int mutSeverity, 
+        public (List<Summary>, List<Chromosom[]>) StartFullMemory(int popsize, int childNumber, int currSel, int currX,
+                                                          int currMut, double mutChance, int currMutSev, int mutSeverity, 
                                                           int currStopMode, int popsToRun, double epsToStopAt){
             List<Summary> GenSummaries = new List<Summary>();
             List<Chromosom[]> Generation = new List<Chromosom[]>();
@@ -111,7 +95,7 @@ namespace KlawiaturaAG
             //koszty przycisków wg. metody ewaluacji Worksmana w układzie {2, 12, 11, 10}
             double[][] koszt = {
                 new double[] { 5, 5},
-                new double[] { 4, 2, 2, 3, 4, 5, 3, 2, 2, 4, 5, 5 },
+                new double[] { 4, 2, 2, 3, 4, 5, 3, 2, 2, 4, 4, 5 },
                 new double[] { 1.5, 1, 1, 1, 3, 3, 1, 1, 1, 1.5, 3 },
                 new double[] { 4, 4, 3, 2, 5, 3, 2, 3, 4, 4 }
             };
@@ -154,6 +138,27 @@ namespace KlawiaturaAG
             output[3] = input.Substring(25, 10);
             return output;
         }
-        
+        public static Chromosom[] ScrambleParentsLayouts(Chromosom[] input)
+        {
+            Chromosom[] output = input;
+            int len = input.Length;
+
+            Random rand = new Random();
+
+            for (int i = 0; i < len; i++)
+            {
+                char[] chars = LayoutToString(output[i].layout).ToCharArray();
+                for (int k = 0; k < chars.Length; k++)
+                {
+                    int randIndex = rand.Next(chars.Length);
+                    char temp = chars[k];
+                    chars[k] = chars[randIndex];
+                    chars[randIndex] = temp;
+                }
+                output[i].layout = StringToLayout(new string(chars));
+            }
+
+            return output;
+        }
     }
 }
