@@ -6,47 +6,13 @@ namespace KlawiaturaAG
 {
     public class GeneticAlgorithm
     {
-        /*public int popSize { get; set; } = 25;
-        public int parentNumber { get; set; } = 2;
-        public int childNumber { get; set; } = 1;
-        public Selections currSel { get; set; } = Selections.Tournament;
-        public Crossovers currX { get; set; } = Crossovers.OX;
-        public Mutations currMut { get; set; } = Mutations.PairSwap;
-        public double mutChance { get; set; } = 0.01;
-        public MutationSeverities currMutSev {get;set;} = MutationSeverities.Random;
-        public int mutSeverity { get; set; } = 1;
-        public int popsToRun { get; set; } = 25;
-        public double epsToStopAt { get; set; } = 0.01;
-        public int currStopMode { get; set; } = 0;*/
-
-        /*
-            rodzice = new Chromosom[popsize];
-            dzieci = new Chromosom[popsize];
-
-            Random rand = new Random();
-
-            for(int i = 0; i<popsize;i++)
-            {
-                rodzice[i] = new Chromosom();
-                char[] chars = LayoutToString(rodzice[i].layout).ToCharArray();
-                for(int k = 0; k < chars.Length; k++)
-                {
-                    int randIndex = rand.Next(chars.Length);
-                    char temp = chars[k];
-                    chars[k] = chars[randIndex];
-                    chars[randIndex] = temp;
-                }
-                rodzice[i].layout = StringToLayout(new string(chars));
-            }
-         */
-
-
-        public (List<Summary>, Chromosom[]) StartNoMemory(int popsize, int childNumber, int currSel, int currX,
+        public static (List<Summary>, List<Chromosom[]>) StartNoMemory(int popsize, int childNumber, int currSel, int currX,
                                                       int currMut, double mutChance, int currMutSev, int mutSeverity,
                                                       int currStopMode, int popsToRun, double epsToStopAt)
         {
             //preparing the output variable;
             List<Summary> GenSummaries = new List<Summary>();
+            List<Chromosom[]> OutputGen = new List<Chromosom[]>();
             //two generations that we're working with
             Chromosom[] Parents = new Chromosom[popsize];
             //prepping Parents, random scramble
@@ -56,7 +22,7 @@ namespace KlawiaturaAG
             //calculating the Parents' fitness
             foreach (var p in Parents)
             {
-                p.fitness = Fn(p.layout);
+                p.fitness = Fn(StringToLayout(p.layout));
             }
             //do-while control variables breakcondition to exit, get to count generations (for generation number exit)
             bool breakCondition = false;
@@ -77,16 +43,19 @@ namespace KlawiaturaAG
                 while (children.Count != popsize)
                 {
                     Chromosom[] selParents = ParentSelection.SelectionInterface(Parents, currSel);
-                    string[] newBorn = CrossoverModule.SelectCrossoverAlgorithm(selParents, currX, childNumber);
-                    Chromosom[] newChildren = new Chromosom[childNumber];
+                    Chromosom[] newChildren = CrossoverModule.SelectCrossoverAlgorithm(selParents, currX, childNumber);
                     for (int i = 0; i < childNumber; i++)
                     {
-                        newChildren[i] = new Chromosom();
-                        newChildren[i].layout = StringToLayout(newBorn[i]);
-                        newChildren[i].fitness = Fn(newChildren[i].layout);
+                        newChildren[i].fitness = Fn(StringToLayout(newChildren[i].layout));
                         children.Add(newChildren[i]);
                     }
                 }
+                while(children.Count > popsize)
+                {
+                    children.Remove((from c in children orderby c.fitness descending select c).First());
+                }
+                //add mutations
+
                 //checking the selected stop mode
                 if (currStopMode == 0 && popsToRun == gen)
                 {
@@ -119,15 +88,15 @@ namespace KlawiaturaAG
                 //Updating the genSummaries
                 bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
                 avgFit = (from p in Parents orderby p.fitness select p.fitness).Average();
-                Summary currGenSummary = new Summary(gen, bestFit, avgFit);
+                currGenSummary = new Summary(gen, bestFit, avgFit);
                 GenSummaries.Add(currGenSummary);
             } while (!breakCondition);
 
-
-            return (GenSummaries, Parents);
+            OutputGen.Add(Parents);
+            return (GenSummaries, OutputGen);
         }
 
-        public (List<Summary>, List<Chromosom[]>) StartFullMemory(int popsize, int childNumber, int currSel, int currX,
+        public static (List<Summary>, List<Chromosom[]>) StartFullMemory(int popsize, int childNumber, int currSel, int currX,
                                                           int currMut, double mutChance, int currMutSev, int mutSeverity,
                                                           int currStopMode, int popsToRun, double epsToStopAt)
         {
@@ -146,7 +115,7 @@ namespace KlawiaturaAG
             //calculating the Parents' fitness
             foreach (var p in Parents)
             {
-                p.fitness = Fn(p.layout);
+                p.fitness = Fn(StringToLayout(p.layout));
             }
 
             //do-while control variables breakcondition to exit, get to count generations (for generation number exit)
@@ -171,16 +140,19 @@ namespace KlawiaturaAG
                 while (children.Count != popsize)
                 {
                     Chromosom[] selParents = ParentSelection.SelectionInterface(Parents, currSel);
-                    string[] newBorn = CrossoverModule.SelectCrossoverAlgorithm(selParents, currX, childNumber);
-                    Chromosom[] newChildren = new Chromosom[childNumber];
+                    Chromosom[] newChildren = CrossoverModule.SelectCrossoverAlgorithm(selParents, currX, childNumber);
                     for (int i = 0; i < childNumber; i++)
                     {
-                        newChildren[i] = new Chromosom();
-                        newChildren[i].layout = StringToLayout(newBorn[i]);
-                        newChildren[i].fitness = Fn(newChildren[i].layout);
+                        newChildren[i].fitness = Fn(StringToLayout(newChildren[i].layout));
                         children.Add(newChildren[i]);
                     }
                 }
+                while (children.Count > popsize)
+                {
+                    children.Remove((from c in children orderby c.fitness descending select c).First());
+                }
+                //add mutations
+
                 //checking the selected stop mode
                 if (currStopMode == 0 && popsToRun == gen)
                 {
@@ -216,7 +188,7 @@ namespace KlawiaturaAG
                 //Updating the genSummaries
                 bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
                 avgFit = (from p in Parents orderby p.fitness select p.fitness).Average();
-                Summary currGenSummary = new Summary(gen, bestFit, avgFit);
+                currGenSummary = new Summary(gen, bestFit, avgFit);
                 GenSummaries.Add(currGenSummary);
             } while (!breakCondition);
 
@@ -283,7 +255,7 @@ namespace KlawiaturaAG
 
             for (int i = 0; i < len; i++)
             {
-                char[] chars = LayoutToString(output[i].layout).ToCharArray();
+                char[] chars = output[i].layout.ToCharArray();
                 for (int k = 0; k < chars.Length; k++)
                 {
                     int randIndex = rand.Next(chars.Length);
@@ -291,7 +263,7 @@ namespace KlawiaturaAG
                     chars[k] = chars[randIndex];
                     chars[randIndex] = temp;
                 }
-                output[i].layout = StringToLayout(new string(chars));
+                output[i].layout = new string(chars);
             }
 
             return output;

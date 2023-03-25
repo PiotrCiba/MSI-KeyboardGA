@@ -9,27 +9,32 @@ namespace KlawiaturaAG
 {
     public static class CrossoverModule
     {
-        public static string[] SelectCrossoverAlgorithm(Chromosom[] parents, int mode, int NumberOfCildren)
+        public static Chromosom[] SelectCrossoverAlgorithm(Chromosom[] parents, int mode, int NumberOfCildren)
         {
-            string[] output = new string[NumberOfCildren];
+            Chromosom[] output = new Chromosom[NumberOfCildren];
+            for(int i = 0; i < NumberOfCildren; i++)
+            {
+                output[i] = new Chromosom();
+            }
+
             switch (mode)
             {
                 case 0:
                     if (NumberOfCildren == 1)
-                        output[0] = OrderCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                        output[0].layout = OrderCrossover(parentOne: parents[0], parentTwo: parents[1]);
                     else
                     {
-                        output[0] = OrderCrossover(parentOne: parents[0], parentTwo: parents[1]);
-                        output[1] = OrderCrossover(parentOne: parents[1], parentTwo: parents[2]);
+                        output[0].layout = OrderCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                        output[1].layout = OrderCrossover(parentOne: parents[1], parentTwo: parents[2]);
                     }
                     break;
                 case 1:
                     if (NumberOfCildren == 1)
-                        output[0] = EdgeRecombinationCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                        output[0].layout = EdgeRecombinationCrossover(parentOne: parents[0], parentTwo: parents[1]);
                     else
                     {
-                        output[0] = EdgeRecombinationCrossover(parentOne: parents[0], parentTwo: parents[1]);
-                        output[1] = EdgeRecombinationCrossover(parentOne: parents[1], parentTwo: parents[2]);
+                        output[0].layout = EdgeRecombinationCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                        output[1].layout = EdgeRecombinationCrossover(parentOne: parents[1], parentTwo: parents[2]);
                     }
                     break;
             }
@@ -40,8 +45,8 @@ namespace KlawiaturaAG
         {
             //parents DNA extraction
             string parentA,parentB;
-            parentA = GeneticAlgorithm.LayoutToString(parentOne.layout);
-            parentB = GeneticAlgorithm.LayoutToString(parentTwo.layout);
+            parentA = parentOne.layout;
+            parentB = parentTwo.layout;
 
             //misc variables, two random-ish crossover points
             int len,pointA,pointB;
@@ -82,8 +87,8 @@ namespace KlawiaturaAG
         {
             //parents DNA extraction
             string parentA, parentB;
-            parentA = GeneticAlgorithm.LayoutToString(parentOne.layout);
-            parentB = GeneticAlgorithm.LayoutToString(parentTwo.layout);
+            parentA = parentOne.layout;
+            parentB = parentTwo.layout;
 
             int len = parentA.Length;
             Random rnd = new Random();

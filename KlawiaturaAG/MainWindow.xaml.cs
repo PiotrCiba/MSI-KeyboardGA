@@ -6,6 +6,9 @@ using System.Windows.Media;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm;
 using System.Security.RightsManagement;
+using System.Collections.Generic;
+using System.Printing;
+using System.Linq;
 
 namespace KlawiaturaAG
 {
@@ -19,7 +22,7 @@ namespace KlawiaturaAG
         public bool isShowingCost { get; set; } = false;
         public string[] Layouts { get; set; } = { "QWERTY", "Dvorak", "ARENSITO", "Colemak", "Workman", "<Selected>" };
 
-        public const double QwertyValue = 253.19964999999996;
+        public const double QwertyValue = 253.18964999999992;
         public double CurrLayoutEvaluation { get; set; } = 0;
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ChildrenValues { get; set; } = { 1, 2 };
@@ -28,25 +31,29 @@ namespace KlawiaturaAG
         public string[] MutationAlgorithms { get; set; } = { "Pair Swap", "Partial Scramble" };
         public string[] SeverityTypes { get; set; } = { "Random", "Continuous" };
 
-        GeneticAlgorithm GA = new GeneticAlgorithm();
-
         //GA's starting values, to be set upt before strting the algorithm
-        public int popSize { get; set; } = 25;
-        public int childNumber { get; set; } = 1;
-        public int currSel { get; set; } = 0;
-        public int currX { get; set; } = 0;
-        public int currMut { get; set; } = 0;
-        public double mutChance { get; set; } = 0.01;
-        public int currMutSev {get;set;} = 0;
-        public int mutSeverity { get; set; } = 1;
-        public int popsToRun { get; set; } = 25;
-        public double epsToStopAt { get; set; } = 0.01;
-        public int currStopMode { get; set; } = 0;
+        public static int popSize { get; set; } = 25;
+        public static int childNumber { get; set; } = 1;
+        public static int currSel { get; set; } = 0;
+        public static int currX { get; set; } = 0;
+        public static int currMut { get; set; } = 0;
+        public static double mutChance { get; set; } = 0.01;
+        public static int currMutSev {get;set;} = 0;
+        public static int mutSeverity { get; set; } = 1;
+        public static int popsToRun { get; set; } = 25;
+        public static double epsToStopAt { get; set; } = 0.01;
+        public static int currStopMode { get; set; } = 0;
+
+        //GA's outputs, to be used in datagrids
+
+        public Summary[] GenerationSummaries { get; set; } = new Summary[0];
+        public Chromosom[] CurrSelGeneration { get; set; } = new Chromosom[0];
+        public List<Chromosom[]> AllGenerations { get; set; } = new List<Chromosom[]>();
 
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        protected void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -91,9 +98,6 @@ namespace KlawiaturaAG
                     break;
                 case 4: //Workman layout
                     CurrentLayout = new string[] { "-=", "QDRWBJFUP;[]", "ASHTGYNEOI'", "ZXMCVKL,.?" };
-                    break;
-                default: //defaults to QWERTY
-                    CurrentLayout = new string[] { "-=", "QWERTYUIOP[]", "ASDFGHJKL;'", "ZXCVBNM,.?" };
                     break;
             }
             UpdateKeyboardLayout();
@@ -293,11 +297,21 @@ namespace KlawiaturaAG
         {
             if (IsFullMemory.IsChecked == true)
             {
-
+                (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.StartFullMemory(popSize, childNumber, currSel, currX, currMut, mutChance, currMutSev, mutSeverity, currStopMode, popsToRun, epsToStopAt);
+                GenerationSummaries = output.Item1.ToArray();
+                AllGenerations = output.Item2;
+                CurrSelGeneration = AllGenerations.Last();
+                OnPropertyChanged(nameof(GenerationSummaries));
+                OnPropertyChanged(nameof(CurrSelGeneration));
             }
             else
             {
-
+                (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.StartNoMemory(popSize,childNumber,currSel,currX,currMut,mutChance,currMutSev,mutSeverity,currStopMode,popsToRun,epsToStopAt);
+                GenerationSummaries = output.Item1.ToArray();
+                AllGenerations = output.Item2;
+                CurrSelGeneration = AllGenerations.Last();
+                OnPropertyChanged(nameof(GenerationSummaries));
+                OnPropertyChanged(nameof(CurrSelGeneration));
             }
         }
 
@@ -351,7 +365,36 @@ namespace KlawiaturaAG
             currStopMode = 1;
         }
 
-        
+        private void GenerationsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AllGenerations.Count > 1)
+            {
+                CurrSelGeneration = AllGenerations[GenerationsDataGrid.SelectedIndex];
+                OnPropertyChanged(nameof(CurrSelGeneration));
+                ChromosomeDataGrid.SelectedIndex = 0;
+            }
+        }
+
+        private void ChromosomeDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ChromosomeDataGrid.SelectedIndex >= 0)
+            {
+                LayoutSelection.SelectedIndex = 5;
+                if (AllGenerations.Count == 1)
+                {
+                    SelectedLayoutID.Content = "Gen " + GenerationSummaries.Length + ", Ch " + ChromosomeDataGrid.SelectedIndex;
+                }
+                else
+                {
+                    SelectedLayoutID.Content = "Gen " + GenerationsDataGrid.SelectedIndex + ", Ch " + ChromosomeDataGrid.SelectedIndex;
+                }
+                string tempLayout = CurrSelGeneration[ChromosomeDataGrid.SelectedIndex].layout;
+                CurrentLayout = GeneticAlgorithm.StringToLayout(tempLayout);
+                UpdateKeyboardLayout();
+                if (isShowingCost)
+                    isShowingCost = false;
+                UpdateKeyboardEvaluation();
+            }
+        }
     }
 }
-
