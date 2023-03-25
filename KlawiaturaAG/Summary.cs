@@ -8,17 +8,15 @@ namespace KlawiaturaAG
 {
     public class Summary
     {
-        public string IdPokolenia = "";
+        public int IdPokolenia = 0;
         public double BestFitness = 0;
         public double AvgFitness = 0;
-        public double MedianFitness = 0;
 
-        public Summary(string idPokolenia, double bestFitness, double avgFitness, double medianFitness)
+        public Summary(int idPokolenia, double bestFitness, double avgFitness)
         {
             IdPokolenia = idPokolenia;
             BestFitness = bestFitness;
             AvgFitness = avgFitness;
-            MedianFitness = medianFitness;
         }
     }
 }

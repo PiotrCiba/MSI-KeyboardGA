@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Printing;
-using System.Windows.Markup;
-using System.Windows.Media.Imaging;
 
 namespace KlawiaturaAG
 {
@@ -46,46 +43,185 @@ namespace KlawiaturaAG
 
         public (List<Summary>, Chromosom[]) StartNoMemory(int popsize, int childNumber, int currSel, int currX,
                                                       int currMut, double mutChance, int currMutSev, int mutSeverity,
-                                                      int currStopMode, int popsToRun, double epsToStopAt) {
+                                                      int currStopMode, int popsToRun, double epsToStopAt)
+        {
             //preparing the output variable;
             List<Summary> GenSummaries = new List<Summary>();
             //two generations that we're working with
             Chromosom[] Parents = new Chromosom[popsize];
-            Chromosom[] Children = new Chromosom[popsize];
+            //prepping Parents, random scramble
+            for (int i = 0; i < popsize; i++)
+                Parents[i] = new Chromosom();
+            Parents = ScrambleParentsLayouts(Parents);
+            //calculating the Parents' fitness
+            foreach (var p in Parents)
+            {
+                p.fitness = Fn(p.layout);
+            }
+            //do-while control variables breakcondition to exit, get to count generations (for generation number exit)
+            bool breakCondition = false;
+            int gensToEmergency = 5;
+            int gen = 0;
+
+            //creating the first Summary for GenSummaries
+            double bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
+            double avgFit = (from p in Parents orderby p.fitness select p.fitness).Average();
+            Summary currGenSummary = new Summary(gen, bestFit, avgFit);
+            GenSummaries.Add(currGenSummary);
+
+            do
+            {
+                gen++;
+                List<Chromosom> children = new List<Chromosom>();
+                //populating the children generation
+                while (children.Count != popsize)
+                {
+                    Chromosom[] selParents = ParentSelection.SelectionInterface(Parents, currSel);
+                    string[] newBorn = CrossoverModule.SelectCrossoverAlgorithm(selParents, currX, childNumber);
+                    Chromosom[] newChildren = new Chromosom[childNumber];
+                    for (int i = 0; i < childNumber; i++)
+                    {
+                        newChildren[i] = new Chromosom();
+                        newChildren[i].layout = StringToLayout(newBorn[i]);
+                        newChildren[i].fitness = Fn(newChildren[i].layout);
+                        children.Add(newChildren[i]);
+                    }
+                }
+                //checking the selected stop mode
+                if (currStopMode == 0 && popsToRun == gen)
+                {
+                    breakCondition = true;
+                }
+                else if (currStopMode == 1)
+                {
+                    //if stop mode is 'eps', calculate the relative improvement over he generations
+                    double bestOfParents = (from p in Parents orderby p.fitness select p.fitness).First();
+                    double bestOfChildren = (from c in children orderby c.fitness select c.fitness).First();
+                    if (bestOfChildren >= bestOfParents)
+                    {
+                        if (gensToEmergency > 0)
+                        {
+                            gensToEmergency--;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else if ((bestOfChildren - bestOfParents) / bestOfParents < epsToStopAt)
+                        breakCondition = true;
+                    else
+                        gensToEmergency = 5;
+                }
+                //children are now parents
+                Parents = children.ToArray();
+
+                //Updating the genSummaries
+                bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
+                avgFit = (from p in Parents orderby p.fitness select p.fitness).Average();
+                Summary currGenSummary = new Summary(gen, bestFit, avgFit);
+                GenSummaries.Add(currGenSummary);
+            } while (!breakCondition);
+
+
+            return (GenSummaries, Parents);
+        }
+
+        public (List<Summary>, List<Chromosom[]>) StartFullMemory(int popsize, int childNumber, int currSel, int currX,
+                                                          int currMut, double mutChance, int currMutSev, int mutSeverity,
+                                                          int currStopMode, int popsToRun, double epsToStopAt)
+        {
+            //preparing the output variables;
+            List<Summary> GenSummaries = new List<Summary>();
+            List<Chromosom[]> Pokolenia = new List<Chromosom[]>();
+
+            //two generations that we're working with
+            Chromosom[] Parents = new Chromosom[popsize];
+
             //prepping Parents, random scramble
             for (int i = 0; i < popsize; i++)
                 Parents[i] = new Chromosom();
             Parents = ScrambleParentsLayouts(Parents);
 
-            //dowhile control variables breakcondition to exit, get to count generations (for generation number exit)
+            //calculating the Parents' fitness
+            foreach (var p in Parents)
+            {
+                p.fitness = Fn(p.layout);
+            }
+
+            //do-while control variables breakcondition to exit, get to count generations (for generation number exit)
             bool breakCondition = false;
+            int gensToEmergency = 5;
             int gen = 0;
 
-            do{
+            //Parents archived do Listy Pokolenia
+            Pokolenia.Add(Parents);
 
-                
-            }while (!breakCondition);
-            
-
-            return (GenSummaries,Parents);
-        }
-
-        public (List<Summary>, List<Chromosom[]>) StartFullMemory(int popsize, int childNumber, int currSel, int currX,
-                                                          int currMut, double mutChance, int currMutSev, int mutSeverity, 
-                                                          int currStopMode, int popsToRun, double epsToStopAt){
-            List<Summary> GenSummaries = new List<Summary>();
-            List<Chromosom[]> Generation = new List<Chromosom[]>();
-
-            bool breakCondition = false;
-            int gen = 0;
+            //creating the first Summary for GenSummaries
+            double bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
+            double avgFit = (from p in Parents orderby p.fitness select p.fitness).Average();
+            Summary currGenSummary = new Summary(gen, bestFit, avgFit);
+            GenSummaries.Add(currGenSummary);
 
             do
             {
+                gen++;
+                List<Chromosom> children = new List<Chromosom>();
+                //populating the children generation
+                while (children.Count != popsize)
+                {
+                    Chromosom[] selParents = ParentSelection.SelectionInterface(Parents, currSel);
+                    string[] newBorn = CrossoverModule.SelectCrossoverAlgorithm(selParents, currX, childNumber);
+                    Chromosom[] newChildren = new Chromosom[childNumber];
+                    for (int i = 0; i < childNumber; i++)
+                    {
+                        newChildren[i] = new Chromosom();
+                        newChildren[i].layout = StringToLayout(newBorn[i]);
+                        newChildren[i].fitness = Fn(newChildren[i].layout);
+                        children.Add(newChildren[i]);
+                    }
+                }
+                //checking the selected stop mode
+                if (currStopMode == 0 && popsToRun == gen)
+                {
+                    breakCondition = true;
+                }
+                else if (currStopMode == 1)
+                {
+                    //if stop mode is 'eps', calculate the relative improvement over he generations
+                    double bestOfParents = (from p in Parents orderby p.fitness select p.fitness).First();
+                    double bestOfChildren = (from c in children orderby c.fitness select c.fitness).First();
+                    if (bestOfChildren >= bestOfParents)
+                    {
+                        if (gensToEmergency > 0)
+                        {
+                            gensToEmergency--;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    else if ((bestOfChildren - bestOfParents) / bestOfParents < epsToStopAt)
+                        breakCondition = true;
+                    else
+                        gensToEmergency = 5;
+                }
+                //children are now parents
+                Parents = children.ToArray();
 
+                //Archived do listy Pokolenia;
+                Pokolenia.Add(Parents);
+
+                //Updating the genSummaries
+                bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
+                avgFit = (from p in Parents orderby p.fitness select p.fitness).Average();
+                Summary currGenSummary = new Summary(gen, bestFit, avgFit);
+                GenSummaries.Add(currGenSummary);
             } while (!breakCondition);
 
 
-            return (GenSummaries, Generation);
+            return (GenSummaries, Pokolenia);
         }
 
         public static double Fn(string[] input)
