@@ -64,7 +64,7 @@ namespace KlawiaturaAG
             }
 
             char[] child = new char[len];
-            for(int i = pointA; i < pointB; i++)
+            for(int i = pointA; i <= pointB; i++)
                 child[i] = parentA[i];
 
             int childIndex = pointB + 1;

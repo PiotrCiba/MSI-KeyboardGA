@@ -347,7 +347,7 @@
 
         <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Stroke="Gray" Margin="1,1,1,1"/>
         <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Top" Margin="5,5,0,0" Foreground="Black" Text="Pokolenia"/>
-        <DataGrid x:Name="GenerationsDataGrid" Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" Margin="5,27,5,5" ItemsSource="{Binding GenerationSummaries, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="GenerationsDataGrid_SelectionChanged">
+        <DataGrid x:Name="GenerationsDataGrid" Grid.Column="1" Grid.Row="0"  Grid.RowSpan="2" Margin="5,27,5,5" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding GenerationSummaries, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="GenerationsDataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Gen." Width="1*" Binding="{Binding IdPokolenia}"/>
                 <DataGridTextColumn Header="Best Fitness" Width="2*" Binding ="{Binding BestFitness}"/>
@@ -357,7 +357,7 @@
 
         <Rectangle Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Stroke="Gray" Margin="1,1,1,1"/>
         <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Top" Margin="5,5,0,0" Foreground="Black" Text="Chromosomy"/>
-        <DataGrid x:Name="ChromosomeDataGrid" Grid.Column="1" Grid.Row="2"  Grid.RowSpan="2" Margin="5,25,5,5" ItemsSource="{Binding CurrSelGeneration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="ChromosomeDataGrid_SelectionChanged">
+        <DataGrid x:Name="ChromosomeDataGrid" Grid.Column="1" Grid.Row="2"  Grid.RowSpan="2" Margin="5,25,5,5" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding CurrSelGeneration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="ChromosomeDataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Layout" Width="1*" Binding="{Binding layout}"/>
                 <DataGridTextColumn Header="Fitness" Width="2*" Binding="{Binding fitness}"/>

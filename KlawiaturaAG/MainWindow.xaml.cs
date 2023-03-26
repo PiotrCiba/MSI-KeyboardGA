@@ -300,7 +300,9 @@ namespace KlawiaturaAG
                 (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.StartFullMemory(popSize, childNumber, currSel, currX, currMut, mutChance, currMutSev, mutSeverity, currStopMode, popsToRun, epsToStopAt);
                 GenerationSummaries = output.Item1.ToArray();
                 AllGenerations = output.Item2;
-                CurrSelGeneration = AllGenerations.Last();
+                GenerationsDataGrid.SelectedIndex = 0;
+                ChromosomeDataGrid.SelectedIndex = 0;
+                CurrSelGeneration = AllGenerations.First();
                 OnPropertyChanged(nameof(GenerationSummaries));
                 OnPropertyChanged(nameof(CurrSelGeneration));
             }
@@ -309,7 +311,9 @@ namespace KlawiaturaAG
                 (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.StartNoMemory(popSize,childNumber,currSel,currX,currMut,mutChance,currMutSev,mutSeverity,currStopMode,popsToRun,epsToStopAt);
                 GenerationSummaries = output.Item1.ToArray();
                 AllGenerations = output.Item2;
-                CurrSelGeneration = AllGenerations.Last();
+                GenerationsDataGrid.SelectedIndex = 0;
+                ChromosomeDataGrid.SelectedIndex = 0;
+                CurrSelGeneration = AllGenerations.First();
                 OnPropertyChanged(nameof(GenerationSummaries));
                 OnPropertyChanged(nameof(CurrSelGeneration));
             }

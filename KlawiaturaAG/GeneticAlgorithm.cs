@@ -12,7 +12,7 @@ namespace KlawiaturaAG
         {
             //preparing the output variable;
             List<Summary> GenSummaries = new List<Summary>();
-            List<Chromosom[]> OutputGen = new List<Chromosom[]>();
+            List<Chromosom[]> Pokolenia = new List<Chromosom[]>();
             //two generations that we're working with
             Chromosom[] Parents = new Chromosom[popsize];
             //prepping Parents, random scramble
@@ -92,8 +92,9 @@ namespace KlawiaturaAG
                 GenSummaries.Add(currGenSummary);
             } while (!breakCondition);
 
-            OutputGen.Add(Parents);
-            return (GenSummaries, OutputGen);
+            Pokolenia.Add(Parents.OrderBy(o=>o.fitness).ToArray());
+
+            return (GenSummaries, Pokolenia);
         }
 
         public static (List<Summary>, List<Chromosom[]>) StartFullMemory(int popsize, int childNumber, int currSel, int currX,
@@ -183,7 +184,7 @@ namespace KlawiaturaAG
                 Parents = children.ToArray();
 
                 //Archived do listy Pokolenia;
-                Pokolenia.Add(Parents);
+                Pokolenia.Add(Parents.OrderBy(o=>o.fitness).ToArray());
 
                 //Updating the genSummaries
                 bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
