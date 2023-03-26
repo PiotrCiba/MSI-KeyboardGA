@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace KlawiaturaAG
@@ -39,6 +40,7 @@ namespace KlawiaturaAG
             {
                 gen++;
                 List<Chromosom> children = new List<Chromosom>();
+
                 //populating the children generation
                 while (children.Count != popsize)
                 {
@@ -50,22 +52,32 @@ namespace KlawiaturaAG
                         children.Add(newChildren[i]);
                     }
                 }
+
+                //Delete any children over the popsize limit (may happen if there is more than 1 child per parents, and it "overflows"
                 while(children.Count > popsize)
                 {
                     children.Remove((from c in children orderby c.fitness descending select c).First());
                 }
-                //add mutations
+
+                //apply any possible mutations (if it doesn't trigger, the method will simply return it)
+                for(int i = 0; i < popsize; i++)
+                {
+                    children[i] = MutationModule.MutationSelector(children[i], currMut, mutChance, currMutSev, mutSeverity);
+                }
 
                 //checking the selected stop mode
-                if (currStopMode == 0 && popsToRun == gen)
+                if (currStopMode == 0)
                 {
-                    breakCondition = true;
+                    if(popsToRun == gen)
+                        breakCondition = true;
                 }
                 else if (currStopMode == 1)
                 {
                     //if stop mode is 'eps', calculate the relative improvement over he generations
                     double bestOfParents = (from p in Parents orderby p.fitness select p.fitness).First();
                     double bestOfChildren = (from c in children orderby c.fitness select c.fitness).First();
+                    double eps = (bestOfChildren - bestOfParents) / bestOfParents;
+
                     if (bestOfChildren >= bestOfParents)
                     {
                         if (gensToEmergency > 0)
@@ -77,11 +89,12 @@ namespace KlawiaturaAG
                             break;
                         }
                     }
-                    else if ((bestOfChildren - bestOfParents) / bestOfParents < epsToStopAt)
+                    else if (eps < epsToStopAt)
                         breakCondition = true;
                     else
                         gensToEmergency = 5;
                 }
+
                 //children are now parents
                 Parents = children.ToArray();
 
@@ -92,6 +105,7 @@ namespace KlawiaturaAG
                 GenSummaries.Add(currGenSummary);
             } while (!breakCondition);
 
+            //in this case, adding the last generation to output
             Pokolenia.Add(Parents.OrderBy(o=>o.fitness).ToArray());
 
             return (GenSummaries, Pokolenia);
@@ -137,6 +151,7 @@ namespace KlawiaturaAG
             {
                 gen++;
                 List<Chromosom> children = new List<Chromosom>();
+
                 //populating the children generation
                 while (children.Count != popsize)
                 {
@@ -148,11 +163,18 @@ namespace KlawiaturaAG
                         children.Add(newChildren[i]);
                     }
                 }
+
+                //Delete any children over the popsize limit (may happen if there is more than 1 child per parents, and it "overflows"
                 while (children.Count > popsize)
                 {
                     children.Remove((from c in children orderby c.fitness descending select c).First());
                 }
-                //add mutations
+
+                //apply any possible mutations (if it doesn't trigger, the method will simply return it)
+                for (int i = 0; i < popsize; i++)
+                {
+                    children[i] = MutationModule.MutationSelector(children[i], currMut, mutChance, currMutSev, mutSeverity);
+                }
 
                 //checking the selected stop mode
                 if (currStopMode == 0 && popsToRun == gen)
@@ -203,7 +225,6 @@ namespace KlawiaturaAG
 
             //koszty przycisków wg. metody ewaluacji Worksmana w układzie {2, 12, 11, 10}
             double[][] koszt = {
-                new double[] { 5, 5},
                 new double[] { 4, 2, 2, 3, 4, 5, 3, 2, 2, 4, 4, 5 },
                 new double[] { 1.5, 1, 1, 1, 3, 3, 1, 1, 1, 1.5, 3 },
                 new double[] { 4, 4, 3, 2, 5, 3, 2, 3, 4, 4 }
@@ -217,7 +238,7 @@ namespace KlawiaturaAG
                 {'P', 3.1671}, {'Q', 0.1962}, {'R', 7.5809}, {'S', 5.7351}, {'T', 6.9509},
                 {'U', 3.6308}, {'V', 1.0074}, {'W', 1.2899}, {'X', 0.2902}, {'Y', 1.7779},
                 {'Z', 0.2722},
-                {'-',  0.34}, {'=', 0.01}, {'[', 0.01}, {']', 0.01}, {';', 0.0711},
+                {'[', 0.01}, {']', 0.01}, {';', 0.0711},
                 {'\'', 0.54}, {',', 1.3688}, {'.', 1.4511}, {'?', 0.1244}
             };
 
@@ -240,11 +261,11 @@ namespace KlawiaturaAG
         }
         public static string[] StringToLayout(string input)
         {
-            string[] output = new string[4];
-            output[0] = input.Substring(0, 2);
-            output[1] = input.Substring(2, 12);
-            output[2] = input.Substring(14, 11);
-            output[3] = input.Substring(25, 10);
+            //QWERTYUIOP[]ASDFGHJKL;'ZXCVBNM,.?
+            string[] output = new string[3];
+            output[0] = input.Substring(0, 12);
+            output[1] = input.Substring(12, 11);
+            output[2] = input.Substring(23, 10);
             return output;
         }
         public static Chromosom[] ScrambleParentsLayouts(Chromosom[] input)

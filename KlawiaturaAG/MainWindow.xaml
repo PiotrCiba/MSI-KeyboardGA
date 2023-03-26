@@ -335,14 +335,13 @@
                     <RowDefinition Height="3.4*"/>
                     <RowDefinition Height="3.4*"/>
                 </Grid.RowDefinitions>
-                <TextBox x:Name="PopSizeStopConditionBox" Grid.Row="1" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="25"/>
-                <TextBox x:Name="EpsValueStopConditionBox" Grid.Row="2" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="0,01"/>
+                <TextBox x:Name="PopSizeStopConditionBox" Grid.Row="1" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="25" TextChanged="PopSizeStopConditionBox_TextChanged"/>
+                <TextBox x:Name="EpsValueStopConditionBox" Grid.Row="2" Margin="1,1,1,1" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" Text="0,01" TextChanged="EpsValueStopConditionBox_TextChanged"/>
                 <Button x:Name="SaveButton" Grid.Row="3" Margin="2,2,2,2" Content="Zapisz..."/>
                 <Button x:Name="StartButton" Grid.Row="4" Margin="2,2,2,2" Content="Start" Click="StartButton_Click"/>
             </Grid>
 
             <Rectangle Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="8" Margin="1,1,1,1" Stroke="Gray"/>
-            <ProgressBar x:Name="ProgressBar" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="7" Margin="5,5,5,5"/>
         </Grid>
 
         <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Stroke="Gray" Margin="1,1,1,1"/>
