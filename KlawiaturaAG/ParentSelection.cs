@@ -13,7 +13,7 @@ namespace KlawiaturaAG
         public static Chromosom[] SelectionInterface(Chromosom[] candidates, int mode)
         {
             int halflength = (int)(candidates.Length / 2);
-            Chromosom[] tophalf = (from c in candidates orderby c.fitness descending select c).ToArray()[..halflength];
+            Chromosom[] tophalf = (from c in candidates orderby c.fitness ascending select c).ToArray()[..halflength];
             switch (mode)
             {
                 case 0: //Turniej (full)
