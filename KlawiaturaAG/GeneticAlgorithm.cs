@@ -247,7 +247,6 @@ namespace KlawiaturaAG
                 for (int k = 0; k < input[i].Length; k++)
                 {
                     //sumowanie [koszt klawisza] * [częstotliwość znaku]
-                    char tmp = input[i][k];
                     sum += koszt[i][k] * charFreq.GetValueOrDefault(input[i][k]);
                 }
             }
