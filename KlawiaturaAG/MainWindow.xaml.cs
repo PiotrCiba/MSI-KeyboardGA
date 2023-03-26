@@ -26,7 +26,7 @@ namespace KlawiaturaAG
         public double CurrLayoutEvaluation { get; set; } = 0;
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ChildrenValues { get; set; } = { 1, 2 };
-        public string[] SelectionAlgorithms { get; set; } = { "Turniej", "Ruletka" };
+        public string[] SelectionAlgorithms { get; set; } = { "Turniej (full)", "Turniej (1/2)", "Ruletka (full)", "Ruletka (1/2)" };
         public string[] CrossoverAlgorithms { get; set; } = { "OX", "CX", "ERX", "AEX", "HGreX (shh)"};
         public string[] MutationAlgorithms { get; set; } = { "Pair Swap", "Partial Scramble", "Inversion Mutation" };
         public string[] SeverityTypes { get; set; } = { "Type 1", "Type 2" };

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -11,13 +12,19 @@ namespace KlawiaturaAG
     {
         public static Chromosom[] SelectionInterface(Chromosom[] candidates, int mode)
         {
+            int halflength = (int)(candidates.Length / 2);
+            Chromosom[] tophalf = (from c in candidates orderby c.fitness descending select c).ToArray()[..halflength];
             switch (mode)
             {
-                case 0:
+                case 0: //Turniej (full)
                     return TournamentSelectionAlgorithm(candidates);
-                case 1:
+                case 1: //Turniej (1/2)
+                    return TournamentSelectionAlgorithm(tophalf);
+                case 2: //Ruletka (full)
                     return RoulletteSelectionAlgorithm(candidates);
-                default:
+                case 3: //Ruletka (1/2)
+                    return RoulletteSelectionAlgorithm(tophalf);
+                default:    //Turniej (full)
                     return TournamentSelectionAlgorithm(candidates);
             }
         }
