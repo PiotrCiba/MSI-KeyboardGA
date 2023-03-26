@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace KlawiaturaAG
 {
@@ -30,11 +31,38 @@ namespace KlawiaturaAG
                     break;
                 case 1:
                     if (NumberOfCildren == 1)
+                        output[0].layout = CycleCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                    else
+                    {
+                        output[0].layout = CycleCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                        output[1].layout = CycleCrossover(parentOne: parents[1], parentTwo: parents[0]);
+                    }
+                    break;
+                case 2:
+                    if (NumberOfCildren == 1)
                         output[0].layout = EdgeRecombinationCrossover(parentOne: parents[0], parentTwo: parents[1]);
                     else
                     {
                         output[0].layout = EdgeRecombinationCrossover(parentOne: parents[0], parentTwo: parents[1]);
                         output[1].layout = EdgeRecombinationCrossover(parentOne: parents[1], parentTwo: parents[2]);
+                    }
+                    break;
+                case 3:
+                    if (NumberOfCildren == 1)
+                        output[0].layout = AlternatingEdgeCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                    else
+                    {
+                        output[0].layout = AlternatingEdgeCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                        output[1].layout = AlternatingEdgeCrossover(parentOne: parents[1], parentTwo: parents[2]);
+                    }
+                    break;
+                case 4:
+                    if (NumberOfCildren == 1)
+                        output[0].layout = HeurisitcGreedyCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                    else
+                    {
+                        output[0].layout = HeurisitcGreedyCrossover(parentOne: parents[0], parentTwo: parents[1]);
+                        output[1].layout = HeurisitcGreedyCrossover(parentOne: parents[1], parentTwo: parents[2]);
                     }
                     break;
             }
@@ -82,7 +110,42 @@ namespace KlawiaturaAG
 
             return new string(child);
         }
-    
+
+        public static string CycleCrossover(Chromosom parentOne, Chromosom parentTwo)
+        {
+            string p1 = parentOne.layout;
+            string p2 = parentTwo.layout;
+            int len = p1.Length;
+            int[] positions = Enumerable.Range(0, len).ToArray();
+            int posIndex = 0;
+            bool[] visited = new bool[len];
+
+            char[] child = new char[len];
+            while (posIndex < len)
+            {
+                int currPos = positions[posIndex];
+                if (!visited[currPos])
+                {
+                    char val = p1[currPos];
+                    int indexInP2 = p2.IndexOf(val);
+
+                    while(indexInP2 != currPos)
+                    {
+                        visited[indexInP2] = true;
+                        child[indexInP2] = p1[indexInP2];
+                        indexInP2 = p2.IndexOf(p1[indexInP2]);
+                    }
+
+                    visited[currPos] = true;
+                    child[currPos] = p1[currPos];
+                }
+
+                posIndex++;
+            }
+
+            return new string(child);
+        }
+
         public static string EdgeRecombinationCrossover(Chromosom parentOne, Chromosom parentTwo)
         {
             //parents DNA extraction
@@ -93,8 +156,8 @@ namespace KlawiaturaAG
             int len = parentA.Length;
             Random rnd = new Random();
 
-            Dictionary<char, List<char>> adjacencyListA = BuildAdjadencylist(parentA);
-            Dictionary<char, List<char>> adjacencyListB = BuildAdjadencylist(parentB);
+            Dictionary<char, List<char>> adjacencyListA = BuildAdjacencyList(parentA);
+            Dictionary<char, List<char>> adjacencyListB = BuildAdjacencyList(parentB);
 
             char currentNode = parentA[rnd.Next(len)];
 
@@ -103,13 +166,13 @@ namespace KlawiaturaAG
 
             RemoveNodeFromAdjacencyLists(currentNode, adjacencyListA, adjacencyListB);
 
-            for(int i = 0; i < len; i++)
+            for (int i = 0; i < len; i++)
             {
                 List<char> neighbors = adjacencyListA[currentNode].Concat(adjacencyListB[currentNode]).ToList();
 
-                if(neighbors.Count == 0)
+                if (neighbors.Count == 0)
                 {
-                    for(int j = 0; j < len; j++)
+                    for (int j = 0; j < len; j++)
                     {
                         if (!child.Contains(parentA[j]))
                         {
@@ -131,7 +194,172 @@ namespace KlawiaturaAG
             return new string(child);
         }
 
-        private static Dictionary<char, List<char>> BuildAdjadencylist(string input)
+        public static string AlternatingEdgeCrossover(Chromosom parentOne, Chromosom parentTwo)
+        {
+            int length = parentOne.layout.Length;
+            Dictionary<char, List<char>> adjacencyList1 = BuildAdjacencyList(parentOne.layout);
+            Dictionary<char, List<char>> adjacencyList2 = BuildAdjacencyList(parentTwo.layout);
+            Dictionary<char, int> edgeCount = new Dictionary<char, int>();
+
+            // Initialize edge count
+            foreach (char node in adjacencyList1.Keys.Union(adjacencyList2.Keys))
+            {
+                edgeCount[node] = adjacencyList1[node].Count + adjacencyList2[node].Count;
+            }
+
+            // Create child solution
+            StringBuilder sb = new StringBuilder(length);
+            char currentNode = parentOne.layout[0];
+            sb.Append(currentNode);
+
+            // Iterate until all nodes are visited
+            for (int i = 1; i < length; i++)
+            {
+                // Remove last node from adjacency lists of neighbors
+                RemoveNodeFromAdjacencyLists(currentNode, adjacencyList1, adjacencyList2);
+
+                // Find neighbor with minimum number of edges
+                List<char> candidates = new List<char>();
+                int minEdges = int.MaxValue;
+
+                foreach (char neighbor in adjacencyList1[currentNode].Union(adjacencyList2[currentNode]))
+                {
+                    if (edgeCount[neighbor] < minEdges)
+                    {
+                        candidates.Clear();
+                        candidates.Add(neighbor);
+                        minEdges = edgeCount[neighbor];
+                    }
+                    else if (edgeCount[neighbor] == minEdges)
+                    {
+                        candidates.Add(neighbor);
+                    }
+                }
+
+                // Alternate between parents for ties
+                int nextIndex = i % 2;
+                if (candidates.Count > 1)
+                {
+                    if (nextIndex == 0)
+                    {
+                        currentNode = parentOne.layout[i];
+                    }
+                    else
+                    {
+                        currentNode = parentTwo.layout[i];
+                    }
+                }
+                else
+                {
+                    currentNode = candidates[0];
+                }
+
+                // Add next node to child solution
+                sb.Append(currentNode);
+                edgeCount[currentNode] = int.MaxValue;
+            }
+
+            return sb.ToString();
+        }
+
+        public static string HeurisitcGreedyCrossover(Chromosom parentOne, Chromosom parentTwo)
+        {
+            Random rnd = new Random();
+            int length = parentOne.layout.Length;
+            Dictionary<char, List<char>> adjacencyList1 = BuildAdjacencyList(parentOne.layout);
+            Dictionary<char, List<char>> adjacencyList2 = BuildAdjacencyList(parentTwo.layout);
+            Dictionary<char, int> edgeCount = new Dictionary<char, int>();
+
+            // Initialize edge count
+            foreach (char node in adjacencyList1.Keys.Union(adjacencyList2.Keys))
+            {
+                edgeCount[node] = adjacencyList1[node].Count + adjacencyList2[node].Count;
+            }
+
+            // Create child solution
+            StringBuilder sb = new StringBuilder(length);
+            char currentNode = parentOne.layout[0];
+            sb.Append(currentNode);
+
+            // Iterate until all nodes are visited
+            for (int i = 1; i < length; i++)
+            {
+                // Remove last node from adjacency lists of neighbors
+                RemoveNodeFromAdjacencyLists(currentNode, adjacencyList1, adjacencyList2);
+
+                // Find neighbor with highest viability score
+                List<char> candidates = new List<char>();
+                double maxScore = double.MinValue;
+
+                foreach (char neighbor in adjacencyList1[currentNode].Union(adjacencyList2[currentNode]))
+                {
+                    double score = GeneticAlgorithm.SingleFn(neighbor, i);
+                    if (score > maxScore)
+                    {
+                        candidates.Clear();
+                        candidates.Add(neighbor);
+                        maxScore = score;
+                    }
+                    else if (score == maxScore)
+                    {
+                        candidates.Add(neighbor);
+                    }
+                }
+
+                // Select highest scoring neighbor, or random neighbor if no ties
+                if (candidates.Count == 0)
+                {
+                    candidates.AddRange(adjacencyList1[currentNode].Union(adjacencyList2[currentNode]));
+                }
+
+                int randomIndex = rnd.Next(candidates.Count);
+                currentNode = candidates[randomIndex];
+
+                // Add next node to child solution
+                sb.Append(currentNode);
+                edgeCount[currentNode] = int.MaxValue;
+            }
+
+            return sb.ToString();
+        }
+
+        //Meybe TODO: HRndX i/lub HProX
+        //public static string HeurisitcProCrossover(Chromosom parentOne, Chromosom parentTwo)
+        /*
+            {
+                // Define the subset size to select from each parent
+                int subsetSize = parent1.Length / 2;
+
+                // Select a subset of components from each parent
+                List<char> subset1 = parent1.OrderBy(c => SingleFn(c, parent1.IndexOf(c))).Take(subsetSize).ToList();
+                List<char> subset2 = parent2.OrderBy(c => SingleFn(c, parent2.IndexOf(c))).Take(subsetSize).ToList();
+
+                // Combine the selected subsets to create the offspring solution
+                List<char> offspring = new List<char>();
+                offspring.AddRange(subset1);
+
+                foreach (char c in subset2)
+                {
+                    if (!offspring.Contains(c))
+                    {
+                        offspring.Add(c);
+                    }
+                }
+
+                // Add any remaining components from parent 1 to the offspring
+                foreach (char c in parent1)
+                {
+                    if (!offspring.Contains(c))
+                    {
+                        offspring.Add(c);
+                    }
+                }
+
+                // Convert the offspring list to a string and return it
+                return new string(offspring.ToArray());
+            }
+         */
+        private static Dictionary<char, List<char>> BuildAdjacencyList(string input)
         {
             int len = input.Length;
 
