@@ -197,69 +197,32 @@ namespace KlawiaturaAG
         public static string AlternatingEdgeCrossover(Chromosom parentOne, Chromosom parentTwo)
         {
             int length = parentOne.layout.Length;
-            Dictionary<char, List<char>> adjacencyList1 = BuildAdjacencyList(parentOne.layout);
-            Dictionary<char, List<char>> adjacencyList2 = BuildAdjacencyList(parentTwo.layout);
-            Dictionary<char, int> edgeCount = new Dictionary<char, int>();
+            Random rnd = new Random();
+            Dictionary<char, char>[] ArcList = new Dictionary<char, char>[2];
+            ArcList[0] = BuildArcList(parentOne.layout);
+            ArcList[1] = BuildArcList(parentTwo.layout);
 
-            // Initialize edge count
-            foreach (char node in adjacencyList1.Keys.Union(adjacencyList2.Keys))
+            char[] child = new char[length];
+            child[0] = parentOne.layout[0];
+            int parentSwitch = 0;
+
+            for(int i = 1; i < length; i++)
             {
-                edgeCount[node] = adjacencyList1[node].Count + adjacencyList2[node].Count;
-            }
-
-            // Create child solution
-            StringBuilder sb = new StringBuilder(length);
-            char currentNode = parentOne.layout[0];
-            sb.Append(currentNode);
-
-            // Iterate until all nodes are visited
-            for (int i = 1; i < length; i++)
-            {
-                // Remove last node from adjacency lists of neighbors
-                RemoveNodeFromAdjacencyLists(currentNode, adjacencyList1, adjacencyList2);
-
-                // Find neighbor with minimum number of edges
-                List<char> candidates = new List<char>();
-                int minEdges = int.MaxValue;
-
-                foreach (char neighbor in adjacencyList1[currentNode].Union(adjacencyList2[currentNode]))
+                char nextone = ArcList[parentSwitch][child[i-1]];
+                if (!child.Contains(nextone))
                 {
-                    if (edgeCount[neighbor] < minEdges)
-                    {
-                        candidates.Clear();
-                        candidates.Add(neighbor);
-                        minEdges = edgeCount[neighbor];
-                    }
-                    else if (edgeCount[neighbor] == minEdges)
-                    {
-                        candidates.Add(neighbor);
-                    }
-                }
-
-                // Alternate between parents for ties
-                int nextIndex = i % 2;
-                if (candidates.Count > 1)
-                {
-                    if (nextIndex == 0)
-                    {
-                        currentNode = parentOne.layout[i];
-                    }
-                    else
-                    {
-                        currentNode = parentTwo.layout[i];
-                    }
+                    child[i] = nextone;
+                    parentSwitch += (parentSwitch + 1) % 2;
                 }
                 else
                 {
-                    currentNode = candidates[0];
+                    var tempArr = (from a in ArcList[0] where !child.Contains(a.Key) select a.Key).ToArray();
+                    int tempIndex = rnd.Next(tempArr.Length);
+                    child[i] = tempArr[tempIndex];
                 }
-
-                // Add next node to child solution
-                sb.Append(currentNode);
-                edgeCount[currentNode] = int.MaxValue;
             }
 
-            return sb.ToString();
+            return new string(child);
         }
 
         public static string HeurisitcGreedyCrossover(Chromosom parentOne, Chromosom parentTwo)
@@ -392,7 +355,6 @@ namespace KlawiaturaAG
 
             return output;
         }
-
         private static void RemoveNodeFromAdjacencyLists(char node, Dictionary<char, List<char>> adjacencyList1, Dictionary<char, List<char>> adjacencyList2)
         {
             foreach (List<char> neighbors in adjacencyList1.Values)
@@ -404,6 +366,27 @@ namespace KlawiaturaAG
             {
                 neighbors.Remove(node);
             }
+        }
+        private static Dictionary<char, char> BuildArcList(string input)
+        {
+            int len = input.Length;
+            Dictionary<char,char> ArcList = new Dictionary<char, char>();
+            for(int i = 0; i < len; i++)
+            {
+                if (i < len-1)
+                {
+                    ArcList[input[i]] = input[i + 1];
+                }
+                else
+                {
+                    ArcList[input[i]] = input[0];
+                }
+            }
+            return ArcList;
+        }
+        private static void RemoveArcFromArcLists(char ArcKey, Dictionary<char,char> list1, Dictionary<char,char> list2)
+        {
+
         }
     }
 }

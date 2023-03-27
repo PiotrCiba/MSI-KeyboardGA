@@ -256,22 +256,34 @@ namespace KlawiaturaAG
             return sum;
         }
 
+        /*                     0  1  2  3  4  5  6  7  8  9  10  11
+                new double[] { 4, 2, 2, 3, 4, 5, 3, 2, 2, 4, 4, 5 },
+                               12   13 14 15 16 17 18 19 20 21   22
+                new double[] { 1.5, 1, 1, 1, 3, 3, 1, 1, 1, 1.5, 3 },
+                               23 24 25 26 27 28 29 30 31 32
+                new double[] { 4, 4, 3, 2, 5, 3, 2, 3, 4, 4 }
+         */
+
         public static double SingleFn(char znak, int position)
         {
             int row = 0;
-            int pos = 0;
-            if (pos >= 0 && pos < 12) {
+            int col = 0;
+
+            if (position >= 0 && position < 12) 
+            {
                 row = 0;
-                pos = position;
-            } else if (pos >= 12 && pos < 23) {
+                col = position;
+            } else if (position >= 12 && position < 23) 
+            {
                 row = 1;
-                pos = position - 12;
-            } else if (pos >= 23 && pos < 33) {
+                col = position - 12;
+            } else if (position >= 23 && position < 33) 
+            {
                 row = 2;
-                pos = position - 23;
+                col = position - 23;
             }
 
-            return GeneticAlgorithm.koszt[row][pos] * GeneticAlgorithm.charFreq.GetValueOrDefault(znak);
+            return GeneticAlgorithm.koszt[row][col] * GeneticAlgorithm.charFreq.GetValueOrDefault(znak);
         }
         public static string LayoutToString(string[] input)
         {
