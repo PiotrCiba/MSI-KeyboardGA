@@ -1,14 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm;
-using System.Security.RightsManagement;
-using System.Collections.Generic;
-using System.Printing;
-using System.Linq;
 
 namespace KlawiaturaAG
 {
@@ -27,22 +23,10 @@ namespace KlawiaturaAG
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ChildrenValues { get; set; } = { 1, 2 };
         public string[] SelectionAlgorithms { get; set; } = { "Turniej (full)", "Turniej (1/2)", "Ruletka (full)", "Ruletka (1/2)" };
-        public string[] CrossoverAlgorithms { get; set; } = { "OX", "CX", "ERX", "AEX(wip)", "HGreX (shh+wip)"};
+        public string[] CrossoverAlgorithms { get; set; } = { "OX", "CX", "ERX", "AEX", "HGreX (shh+wip)" };
         public string[] MutationAlgorithms { get; set; } = { "Pair Swap", "Partial Scramble", "Inversion Mutation" };
-        public string[] SeverityTypes { get; set; } = { "Type 1", "Type 2" };
 
-        //GA's starting values, to be set upt before strting the algorithm
-        public static int popSize { get; set; } = 25;
-        public static int childNumber { get; set; } = 1;
-        public static int currSel { get; set; } = 0;
-        public static int currX { get; set; } = 0;
-        public static int currMut { get; set; } = 0;
-        public static double mutChance { get; set; } = 0.01;
-        public static int currMutSev {get;set;} = 0;
-        public static int mutSeverity { get; set; } = 1;
-        public static int popsToRun { get; set; } = 25;
-        public static double epsToStopAt { get; set; } = 0.01;
-        public static int currStopMode { get; set; } = 0;
+        public Settings settings = new Settings();
 
         //GA's outputs, to be used in datagrids
 
@@ -93,7 +77,7 @@ namespace KlawiaturaAG
                     CurrentLayout = new string[] { "QL.P';FUDK[]", "ARENBGSITO-", "ZW,HJVBYMX" };
                     break;
                 case 3: //Colemak layout
-                    CurrentLayout = new string[] { "QWFPGJLUY;[]", "ARSTDHNEIO'", "ZXCVBKM,.?"};
+                    CurrentLayout = new string[] { "QWFPGJLUY;[]", "ARSTDHNEIO'", "ZXCVBKM,.?" };
                     break;
                 case 4: //Workman layout
                     CurrentLayout = new string[] { "QDRWBJFUP;[]", "ASHTGYNEOI'", "ZXMCVKL,.?" };
@@ -107,7 +91,7 @@ namespace KlawiaturaAG
 
         public void UpdateKeyboardLayout()
         {
-            SolidColorBrush white = new SolidColorBrush(System.Windows.Media.Colors.White );
+            SolidColorBrush white = new SolidColorBrush(System.Windows.Media.Colors.White);
             SolidColorBrush lightGray = new SolidColorBrush(System.Windows.Media.Colors.LightGray);
             /*
             //0-th row update
@@ -290,67 +274,54 @@ namespace KlawiaturaAG
         {
             CurrLayoutEvaluation = GeneticAlgorithm.Fn(CurrentLayout);
             OnPropertyChanged(nameof(CurrLayoutEvaluation));
-            ImprovementOverQwerty = QwertyValue/CurrLayoutEvaluation;
+            ImprovementOverQwerty = QwertyValue / CurrLayoutEvaluation;
             OnPropertyChanged(nameof(ImprovementOverQwerty));
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            if (IsFullMemory.IsChecked == true)
-            {
-                (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.StartFullMemory(popSize, childNumber, currSel, currX, currMut, mutChance, currMutSev, mutSeverity, currStopMode, popsToRun, epsToStopAt);
-                GenerationSummaries = output.Item1.ToArray();
-                AllGenerations = output.Item2;
-                GenerationsDataGrid.SelectedIndex = 0;
-                ChromosomeDataGrid.SelectedIndex = 0;
-                CurrSelGeneration = AllGenerations.First();
-                OnPropertyChanged(nameof(GenerationSummaries));
-                OnPropertyChanged(nameof(CurrSelGeneration));
-            }
-            else
-            {
-                (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.StartNoMemory(popSize,childNumber,currSel,currX,currMut,mutChance,currMutSev,mutSeverity,currStopMode,popsToRun,epsToStopAt);
-                GenerationSummaries = output.Item1.ToArray();
-                AllGenerations = output.Item2;
-                GenerationsDataGrid.SelectedIndex = 0;
-                ChromosomeDataGrid.SelectedIndex = 0;
-                CurrSelGeneration = AllGenerations.First();
-                OnPropertyChanged(nameof(GenerationSummaries));
-                OnPropertyChanged(nameof(CurrSelGeneration));
-            }
+            (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.Start(settings);
+            GenerationSummaries = output.Item1.ToArray();
+            AllGenerations = output.Item2;
+            GenerationsDataGrid.SelectedIndex = 0;
+            ChromosomeDataGrid.SelectedIndex = 0;
+            CurrSelGeneration = AllGenerations.First();
+            OnPropertyChanged(nameof(GenerationSummaries));
+            OnPropertyChanged(nameof(CurrSelGeneration));
         }
 
         private void PopSizeBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             int temp;
-            if (int.TryParse(PopSizeBox.Text, out temp)) {
-                popSize = temp;
+            if (int.TryParse(PopSizeBox.Text, out temp))
+            {
+                settings.popSize = temp;
                 PopSizeBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
             }
             else
             {
                 PopSizeBox.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
             }
-}
+        }
 
         private void ChildrenCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            childNumber = ChildrenValues[ChildrenCBox.SelectedIndex];
+            settings.childNumber = ChildrenValues[ChildrenCBox.SelectedIndex];
         }
 
         private void ChoiceAlgorithmCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            currSel = ChoiceAlgorithmCBox.SelectedIndex;
+            settings.currSel = ChoiceAlgorithmCBox.SelectedIndex;
         }
 
         private void CrossoverAlgorithmCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            currX = CrossoverAlgorithmCBox.SelectedIndex;
+            settings.currX = CrossoverAlgorithmCBox.SelectedIndex;
         }
 
         private void MutationTypeCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            currMut = MutationTypeCBox.SelectedIndex;
+            settings.currMut = MutationTypeCBox.SelectedIndex;
         }
 
         private void MutationChanceBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -358,7 +329,7 @@ namespace KlawiaturaAG
             double temp;
             if (double.TryParse(MutationChanceBox.Text, out temp))
             {
-                mutChance = temp;
+                settings.mutChance = temp;
                 MutationChanceBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
             }
             else
@@ -367,17 +338,12 @@ namespace KlawiaturaAG
             }
         }
 
-        private void MutationSevCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            currMutSev = MutationSevCBox.SelectedIndex;
-        }
-
         private void MutationSeverityBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             int temp;
             if (int.TryParse(MutationSeverityBox.Text, out temp))
             {
-                mutSeverity = temp;
+                settings.mutSeverity = temp;
                 MutationSeverityBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
             }
             else
@@ -385,18 +351,17 @@ namespace KlawiaturaAG
                 MutationSeverityBox.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
             }
         }
-
-        private void PopSizeStopConditionBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void GenSizeStopConditionBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             int temp;
-            if (int.TryParse(PopSizeStopConditionBox.Text, out temp))
+            if (int.TryParse(GensToRunStopConditionBox.Text, out temp))
             {
-                popsToRun = temp;
-                PopSizeStopConditionBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
+                settings.gensToRun = temp;
+                GensToRunStopConditionBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
             }
             else
             {
-                PopSizeStopConditionBox.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
+                GensToRunStopConditionBox.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
             }
         }
 
@@ -405,7 +370,7 @@ namespace KlawiaturaAG
             double temp;
             if (double.TryParse(EpsValueStopConditionBox.Text, out temp))
             {
-                epsToStopAt = temp;
+                settings.epsToStopAt = temp;
                 EpsValueStopConditionBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
             }
             else
@@ -414,19 +379,19 @@ namespace KlawiaturaAG
             }
         }
 
-        private void PopStopChoice_Checked(object sender, RoutedEventArgs e)
+        private void GenStopChoice_Checked(object sender, RoutedEventArgs e)
         {
-            currStopMode = 0;
+            settings.currStopMode = 0;
         }
 
         private void EpsStopChoice_Checked(object sender, RoutedEventArgs e)
         {
-            currStopMode = 1;
+            settings.currStopMode = 1;
         }
 
         private void GenerationsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (AllGenerations.Count > 1 && GenerationsDataGrid.SelectedIndex>=0)
+            if (AllGenerations.Count > 1 && GenerationsDataGrid.SelectedIndex >= 0)
             {
                 CurrSelGeneration = AllGenerations[GenerationsDataGrid.SelectedIndex];
                 OnPropertyChanged(nameof(CurrSelGeneration));
@@ -456,5 +421,25 @@ namespace KlawiaturaAG
             }
         }
 
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void ElitismValBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void CullingBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        
     }
 }
