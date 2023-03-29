@@ -22,7 +22,8 @@ namespace KlawiaturaAG
         public double CurrLayoutEvaluation { get; set; } = 0;
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ChildrenValues { get; set; } = { 1, 2 };
-        public string[] SelectionAlgorithms { get; set; } = { "Turniej (full)", "Turniej (1/2)", "Ruletka (full)", "Ruletka (1/2)" };
+        public string[] CarryoverAlgorithms { get; set; } = { "No carry-over", "Elityzm"};
+        public string[] SelectionAlgorithms { get; set; } = { "Turniej", "Ruletka", "Rank", "Boltzmann (wip)" };
         public string[] CrossoverAlgorithms { get; set; } = { "OX", "CX", "ERX", "AEX", "HGreX (shh+wip)" };
         public string[] MutationAlgorithms { get; set; } = { "Pair Swap", "Partial Scramble", "Inversion Mutation" };
 
@@ -381,12 +382,12 @@ namespace KlawiaturaAG
 
         private void GenStopChoice_Checked(object sender, RoutedEventArgs e)
         {
-            settings.currStopMode = 0;
+            settings.currStopMode = false;
         }
 
         private void EpsStopChoice_Checked(object sender, RoutedEventArgs e)
         {
-            settings.currStopMode = 1;
+            settings.currStopMode = true;
         }
 
         private void GenerationsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -421,11 +422,12 @@ namespace KlawiaturaAG
             }
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        private void CarryOverCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
         }
-        private void ElitismValBox_TextChanged(object sender, TextChangedEventArgs e)
+
+        private void CarryoverVariable_TextChanged(object sender, TextChangedEventArgs e)
         {
 
         }
@@ -440,6 +442,5 @@ namespace KlawiaturaAG
 
         }
 
-        
     }
 }

@@ -257,12 +257,15 @@
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="2*"/>
-                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="1*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Liczebność:"/>
                 <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Ilość dzieci:"/>
-                <CheckBox Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" Content="Elityzm (top %):" Checked="CheckBox_Checked"/>
-                <CheckBox Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" Content="Culling (bottom %):" Checked="CheckBox_Checked_1"/>
+                <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Carry-over:"/>
+                <TextBlock Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="CO variable:"/>
+                <CheckBox Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" Content="Culling (bottom %):" Checked="CheckBox_Checked_1"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="1" Margin="2,2,2,2">
@@ -271,12 +274,14 @@
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="2*"/>
-                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height="3*"/>
                 </Grid.RowDefinitions>
                 <TextBox x:Name="PopSizeBox" Grid.Row="0" Margin="1,2,1,2" Text="25" FontSize="14" Padding="0,0,0,0" VerticalAlignment="Center" TextChanged="PopSizeBox_TextChanged"/>
                 <ComboBox x:Name="ChildrenCBox" Grid.Row="1" Margin="1,1,1,1" ItemsSource="{Binding ChildrenValues}" SelectedIndex="0" SelectionChanged="ChildrenCBox_SelectionChanged"/>
-                <TextBox x:Name="ElitismValBox" Grid.Row="2" Margin="1,2,1,2" Text="10" TextChanged="ElitismValBox_TextChanged"/>
-                <TextBox x:Name="CullingBox" Grid.Row="3" Margin="1,2,1,2" Text="10" TextChanged="CullingBox_TextChanged"/>
+                <ComboBox x:Name="CarryOverCBox" Grid.Row="2" Margin="1,1,1,1" ItemsSource="{Binding CarryoverAlgorithms}" SelectedIndex="0" SelectionChanged="CarryOverCBox_SelectionChanged"/>
+                <TextBox x:Name="CarryoverVariable" Grid.Row="3" Margin="1,2,1,2" Text="10" TextChanged="CarryoverVariable_TextChanged"/>
+                <TextBox x:Name="CullingBox" Grid.Row="4" Margin="1,2,1,2" Text="10" TextChanged="CullingBox_TextChanged"/>
             </Grid>
 
             <Rectangle Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="1,1,1,1" Stroke="Gray"/>

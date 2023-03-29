@@ -10,7 +10,7 @@ namespace KlawiaturaAG
 {
     public static class CrossoverModule
     {
-        public static Chromosom[] SelectCrossoverAlgorithm(Chromosom[] parents, int mode, int NumberOfCildren)
+        public static Chromosom[] Select(Chromosom[] parents, int mode, int NumberOfCildren)
         {
             Chromosom[] output = new Chromosom[NumberOfCildren];
             for(int i = 0; i < NumberOfCildren; i++)

@@ -11,8 +11,8 @@ namespace KlawiaturaAG
         //population settings
         public int popSize { get; set; } = 25;
         public int childNumber { get; set; } = 1;
-        public bool elitism { get; set; } = false;
-        public double elitismRate { get; set; } = 10;
+        public int carryoverType { get; set; } = 0;
+        public double carryVar { get; set; } = 10;
         public bool culling { get; set; } = false;
         public double cullingRate { get; set; } = 10;
 
@@ -25,7 +25,7 @@ namespace KlawiaturaAG
 
         //GA overall settings
         public bool fullMemory { get; set; } = true;
-        public int currStopMode { get; set; } = 0;
+        public bool currStopMode { get; set; } = 0;
         public int gensToRun { get; set; } = 25;
         public double epsToStopAt { get; set; } = 0.01;
         

@@ -10,7 +10,7 @@ namespace KlawiaturaAG
 {
     public static class ParentSelection
     {
-        public static Chromosom[] SelectionInterface(Chromosom[] candidates, int mode)
+        public static Chromosom[] Select(Chromosom[] candidates, int mode)
         {
             int halflength = (int)(candidates.Length / 2);
             Chromosom[] tophalf = (from c in candidates orderby c.fitness ascending select c).ToArray()[..halflength];

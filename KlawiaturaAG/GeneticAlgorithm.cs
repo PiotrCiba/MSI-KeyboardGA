@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Windows.Media.Converters;
 
 namespace KlawiaturaAG
 {
@@ -29,6 +31,8 @@ namespace KlawiaturaAG
 
         public static (List<Summary>, List<Chromosom[]>) Start(Settings s)
         {
+            //Czacza idzie tak: Rodzice > Fitness > CarryOver > Selekcja > Crossover > Mutacja > Dzieci > "Rodzice = Dzieci" > repeat
+
             //preparing the output variable;
             List<Summary> GenSummaries = new List<Summary>();
             List<Chromosom[]> Pokolenia = new List<Chromosom[]>();
@@ -55,12 +59,13 @@ namespace KlawiaturaAG
 
             //do-while control variables breakcondition to exit, get to count generations (for generation number exit)
             bool breakCondition = false;
-            int gensToEmergency = 5;
+            int gensToMaintainEps = 10;
             int gen = 0;
 
             //creating the first Summary for GenSummaries
-            double bestFit = (from p in Parents orderby p.fitness select p.fitness).First();
-            double avgFit = (from p in Parents orderby p.fitness select p.fitness).Average();
+            var fitnesses = (from p in Parents orderby p.fitness select p.fitness);
+            double bestFit = fitnesses.First();
+            double avgFit = fitnesses.Average();
             Summary currGenSummary = new Summary(gen, bestFit, avgFit);
             
             GenSummaries.Add(currGenSummary);
@@ -68,11 +73,101 @@ namespace KlawiaturaAG
             //do-while for the GA's core
             do {
                 gen++;  //increment gens for gen-based stop condition
+                
+                //prep children List
+                List<Chromosom> children = new List<Chromosom>();
 
-            
+                //carryover-breedingPop from parents
+                (Chromosom[] carry, Chromosom[] breeders) carryAndPop = CarryModule.Select(Parents, s.carryoverType, s.carryVar, s.culling, s.cullingRate);
+
+                //copy carry to children
+                foreach(var c in carryAndPop.carry)
+                {
+                    children.Add(c);
+                }
+
+                //while children < parents
+                while (children.Count < s.popSize)
+                {
+                    //parentSelection, from breedingPop
+                    Chromosom[] couple = ParentSelection.Select(carryAndPop.breeders, s.currSel);
+
+                    //crossover operator, from selected parents
+                    Chromosom[] childrenTemp = CrossoverModule.Select(couple, s.currX, s.childNumber);
+
+                    
+                    //iterate over newly born chlidren
+                    for (int i=0;i<s.childNumber;i++)
+                    {
+                        //mutationModule, may hit, may not hit
+                        childrenTemp[i] = MutationModule.Select(childrenTemp[i], s.currMut, s.mutChance, s.mutSeverity);
+                        //add new chlidren to children
+                        children.Add(childrenTemp[i]);
+                    }
+                }
+
+                //calculate fitness of all children
+                foreach(var c in children)
+                {
+                    if (c.fitness == 0)
+                        c.fitness = Fn(StringToLayout(c.layout));
+                }
+                //sort ascending
+                children = (from c in children orderby c.fitness ascending select c).ToList();
+
+                //if children overflow, cull the lowest fitness one
+                while(children.Count > s.popSize)
+                {
+                    children.Remove(children.Last());
+                }
+
+                //if fullmemory, add children to Pokolenia
+                if (s.fullMemory)
+                {
+                    Pokolenia.Add(children.ToArray());
+                }
+                //summary prep, add to GenSummaries
+                fitnesses = (from c in children orderby c.fitness select c.fitness);
+                bestFit = fitnesses.First();
+                avgFit = fitnesses.Average();
+                currGenSummary = new Summary(gen, bestFit, avgFit);
+                GenSummaries.Add(currGenSummary);
+
+                //parents = children
+                Parents = children.ToArray();
+
+                //check break condition, eventually change
+                if (s.currStopMode)
+                {   
+                    //gens to run mode
+                    if(gen >= s.gensToRun)
+                    {
+                        breakCondition = true;
+                    }
+                }
+                else
+                {   
+                    //stop at set improvement
+                    Summary[] temp = GenSummaries.TakeLast(2).ToArray();
+                    double currentEps = (temp[0].BestFitness - temp[1].BestFitness) / temp[1].BestFitness;
+                    if (currentEps <= s.epsToStopAt)
+                    {
+                        //the set improvement has to keep at it for ~10 rounds before stopping
+                        if (gensToMaintainEps == 0)
+                            breakCondition = true;
+                        else
+                            gensToMaintainEps--;
+                    }
+                    else
+                    {
+                        //if the low eps streak is broken, reset the counter
+                        gensToMaintainEps = 10;
+                    }
+                }
+
             } while (!breakCondition);
 
-
+            //return the results of the algorithm
             return (GenSummaries, Pokolenia);
         }
 

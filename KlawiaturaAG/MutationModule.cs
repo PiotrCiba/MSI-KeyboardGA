@@ -10,7 +10,7 @@ namespace KlawiaturaAG
     public static class MutationModule
     {
         
-        public static Chromosom MutationSelector(Chromosom child, int mutMode, double mutChance, int severity)
+        public static Chromosom Select(Chromosom child, int mutMode, double mutChance, int severity)
         {
             Chromosom output = child;
             string dna = output.layout;
