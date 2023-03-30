@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Windows.Media.Converters;
 
 namespace KlawiaturaAG
 {
@@ -29,7 +26,7 @@ namespace KlawiaturaAG
                 new double[] { 4, 4, 3, 2, 5, 3, 2, 3, 4, 4 }
         };
 
-        public static (List<Summary>, List<Chromosom[]>) Start(Settings s)
+        public static (List<Summary>, List<Chromosom[]>) Start(Settings s, IProgress<int> progress)
         {
             //Czacza idzie tak: Rodzice > Fitness > CarryOver > Selekcja > Crossover > Mutacja > Dzieci > "Rodzice = Dzieci" > repeat
 
@@ -67,13 +64,14 @@ namespace KlawiaturaAG
             double bestFit = fitnesses.First();
             double avgFit = fitnesses.Average();
             Summary currGenSummary = new Summary(gen, bestFit, avgFit);
-            
+
             GenSummaries.Add(currGenSummary);
 
             //do-while for the GA's core
-            do {
+            do
+            {
                 gen++;  //increment gens for gen-based stop condition
-                
+
                 //prep children List
                 List<Chromosom> children = new List<Chromosom>();
 
@@ -81,7 +79,7 @@ namespace KlawiaturaAG
                 (Chromosom[] carry, Chromosom[] breeders) carryAndPop = CarryModule.Select(Parents, s.carryoverType, s.carryVar, s.culling, s.cullingRate);
 
                 //copy carry to children
-                foreach(var c in carryAndPop.carry)
+                foreach (var c in carryAndPop.carry)
                 {
                     children.Add(c);
                 }
@@ -95,9 +93,9 @@ namespace KlawiaturaAG
                     //crossover operator, from selected parents
                     Chromosom[] childrenTemp = CrossoverModule.Select(couple, s.currX, s.childNumber);
 
-                    
+
                     //iterate over newly born chlidren
-                    for (int i=0;i<s.childNumber;i++)
+                    for (int i = 0; i < s.childNumber; i++)
                     {
                         //mutationModule, may hit, may not hit
                         childrenTemp[i] = MutationModule.Select(childrenTemp[i], s.currMut, s.mutChance, s.mutSeverity);
@@ -107,7 +105,7 @@ namespace KlawiaturaAG
                 }
 
                 //calculate fitness of all children
-                foreach(var c in children)
+                foreach (var c in children)
                 {
                     if (c.fitness == 0)
                         c.fitness = Fn(StringToLayout(c.layout));
@@ -116,7 +114,7 @@ namespace KlawiaturaAG
                 children = (from c in children orderby c.fitness ascending select c).ToList();
 
                 //if children overflow, cull the lowest fitness one
-                while(children.Count > s.popSize)
+                while (children.Count > s.popSize)
                 {
                     children.Remove(children.Last());
                 }
@@ -136,20 +134,36 @@ namespace KlawiaturaAG
                 //parents = children
                 Parents = children.ToArray();
 
-                //check break condition, eventually change
-                if (s.currStopMode)
-                {   
+                int report = 0;
+
+                System.Diagnostics.Debug.Write("gens = " + (int)(((double)gen / s.gensToRun) * 100));
+                Summary[] tmpoo = GenSummaries.TakeLast(2).ToArray();
+                double cEps = (tmpoo[0].BestFitness - tmpoo[1].BestFitness) / tmpoo[1].BestFitness;
+                //claculate the report
+                System.Diagnostics.Debug.WriteLine("; EPS = " + (int)((s.epsToStopAt / cEps) * 100));
+
+                if (!s.currStopMode)
+                {
+                    //update the progress for progressbar
+                    report = report = (int)(((double)gen / s.gensToRun) * 100);
+
                     //gens to run mode
-                    if(gen >= s.gensToRun)
+                    if (gen >= s.gensToRun)
                     {
                         breakCondition = true;
                     }
                 }
                 else
-                {   
+                {
                     //stop at set improvement
                     Summary[] temp = GenSummaries.TakeLast(2).ToArray();
                     double currentEps = (temp[0].BestFitness - temp[1].BestFitness) / temp[1].BestFitness;
+
+                    //calculate the report
+                    report = (int)((s.epsToStopAt / cEps) * 100);
+                    if (report < 0)
+                        report = 0;
+
                     if (currentEps <= s.epsToStopAt)
                     {
                         //the set improvement has to keep at it for ~10 rounds before stopping
@@ -163,8 +177,9 @@ namespace KlawiaturaAG
                         //if the low eps streak is broken, reset the counter
                         gensToMaintainEps = 10;
                     }
-                }
 
+                }
+                progress.Report(report);
             } while (!breakCondition);
 
             //return the results of the algorithm
@@ -201,15 +216,17 @@ namespace KlawiaturaAG
             int row = 0;
             int col = 0;
 
-            if (position >= 0 && position < 12) 
+            if (position >= 0 && position < 12)
             {
                 row = 0;
                 col = position;
-            } else if (position >= 12 && position < 23) 
+            }
+            else if (position >= 12 && position < 23)
             {
                 row = 1;
                 col = position - 12;
-            } else if (position >= 23 && position < 33) 
+            }
+            else if (position >= 23 && position < 33)
             {
                 row = 2;
                 col = position - 23;

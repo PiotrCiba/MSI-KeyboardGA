@@ -25,7 +25,7 @@ namespace KlawiaturaAG
 
         //GA overall settings
         public bool fullMemory { get; set; } = true;
-        public bool currStopMode { get; set; } = 0;
+        public bool currStopMode { get; set; } = false;
         public int gensToRun { get; set; } = 25;
         public double epsToStopAt { get; set; } = 0.01;
         

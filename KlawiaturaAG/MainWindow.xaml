@@ -265,7 +265,7 @@
                 <TextBlock Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Ilość dzieci:"/>
                 <TextBlock Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="Carry-over:"/>
                 <TextBlock Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Text="CO variable:"/>
-                <CheckBox Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" Content="Culling (bottom %):" Checked="CheckBox_Checked_1"/>
+                <CheckBox Grid.Row="4" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="30,0,0,0" Content="Culling (bottom %):" x:Name="CullingCheckbox" Checked="CullingCheckbox_Checked"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="1" Margin="2,2,2,2">
@@ -333,7 +333,7 @@
                 <TextBlock Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14"  Text="Zatrzymaj po:"/>
                 <RadioButton Grid.Row="1" x:Name="GenStopChoice" GroupName="stopChoiceRB" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" IsChecked="True" Content="pokoleniach" Checked="GenStopChoice_Checked"/>
                 <RadioButton Grid.Row="2" x:Name="EpsStopChoice" GroupName="stopChoiceRB" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="poprawa &lt;" Checked="EpsStopChoice_Checked"/>
-                <CheckBox Grid.Row="3" x:Name="IsFullMemory" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="Run FullMemory?" IsChecked="true"/>
+                <CheckBox Grid.Row="3" x:Name="IsFullMemory" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="Run FullMemory?" IsChecked="true" Checked="IsFullMemory_Checked"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="5" Margin="1,1,1,1">
@@ -351,6 +351,7 @@
             </Grid>
 
             <Rectangle Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="8" Margin="1,1,1,1" Stroke="Gray"/>
+            <ProgressBar x:Name="currentProgressbar" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="8" Margin="2,2,2,2" Minimum="0" Maximum="100"/>
         </Grid>
 
         <Rectangle Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Stroke="Gray" Margin="1,1,1,1"/>

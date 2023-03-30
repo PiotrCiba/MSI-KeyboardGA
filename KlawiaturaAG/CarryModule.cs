@@ -34,7 +34,7 @@ namespace KlawiaturaAG
             (Chromosom[] carry, Chromosom[] parents) output;
 
             //take topmargin% off the top of the pop and carry it over
-            output.carry = pop.OrderBy(p => p.fitness).Take((int)(topMargin / pop.Length)).ToArray();
+            output.carry = pop.OrderBy(p => p.fitness).Take((int)(topMargin / 100 * pop.Length)).ToArray();
 
             //if culling is on copy over , 
             if (culling)

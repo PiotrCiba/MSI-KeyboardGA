@@ -227,63 +227,9 @@ namespace KlawiaturaAG
 
         public static string HeurisitcGreedyCrossover(Chromosom parentOne, Chromosom parentTwo)
         {
-            Random rnd = new Random();
-            int length = parentOne.layout.Length;
-            Dictionary<char, List<char>> adjacencyList1 = BuildAdjacencyList(parentOne.layout);
-            Dictionary<char, List<char>> adjacencyList2 = BuildAdjacencyList(parentTwo.layout);
-            Dictionary<char, int> edgeCount = new Dictionary<char, int>();
-
-            // Initialize edge count
-            foreach (char node in adjacencyList1.Keys.Union(adjacencyList2.Keys))
-            {
-                edgeCount[node] = adjacencyList1[node].Count + adjacencyList2[node].Count;
-            }
-
-            // Create child solution
-            StringBuilder sb = new StringBuilder(length);
-            char currentNode = parentOne.layout[0];
-            sb.Append(currentNode);
-
-            // Iterate until all nodes are visited
-            for (int i = 1; i < length; i++)
-            {
-                // Remove last node from adjacency lists of neighbors
-                RemoveNodeFromAdjacencyLists(currentNode, adjacencyList1, adjacencyList2);
-
-                // Find neighbor with highest viability score
-                List<char> candidates = new List<char>();
-                double maxScore = double.MinValue;
-
-                foreach (char neighbor in adjacencyList1[currentNode].Union(adjacencyList2[currentNode]))
-                {
-                    double score = GeneticAlgorithm.SingleFn(neighbor, i);
-                    if (score > maxScore)
-                    {
-                        candidates.Clear();
-                        candidates.Add(neighbor);
-                        maxScore = score;
-                    }
-                    else if (score == maxScore)
-                    {
-                        candidates.Add(neighbor);
-                    }
-                }
-
-                // Select highest scoring neighbor, or random neighbor if no ties
-                if (candidates.Count == 0)
-                {
-                    candidates.AddRange(adjacencyList1[currentNode].Union(adjacencyList2[currentNode]));
-                }
-
-                int randomIndex = rnd.Next(candidates.Count);
-                currentNode = candidates[randomIndex];
-
-                // Add next node to child solution
-                sb.Append(currentNode);
-                edgeCount[currentNode] = int.MaxValue;
-            }
-
-            return sb.ToString();
+            int len = parentOne.layout.Length;
+            char[] child = new char[len];
+            
         }
 
         //Meybe TODO: HRndX i/lub HProX
@@ -383,10 +329,6 @@ namespace KlawiaturaAG
                 }
             }
             return ArcList;
-        }
-        private static void RemoveArcFromArcLists(char ArcKey, Dictionary<char,char> list1, Dictionary<char,char> list2)
-        {
-
         }
     }
 }

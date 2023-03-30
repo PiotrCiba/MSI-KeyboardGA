@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -22,7 +24,7 @@ namespace KlawiaturaAG
         public double CurrLayoutEvaluation { get; set; } = 0;
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ChildrenValues { get; set; } = { 1, 2 };
-        public string[] CarryoverAlgorithms { get; set; } = { "No carry-over", "Elityzm"};
+        public string[] CarryoverAlgorithms { get; set; } = { "No carry-over", "Elityzm (%)"};
         public string[] SelectionAlgorithms { get; set; } = { "Turniej", "Ruletka", "Rank", "Boltzmann (wip)" };
         public string[] CrossoverAlgorithms { get; set; } = { "OX", "CX", "ERX", "AEX", "HGreX (shh+wip)" };
         public string[] MutationAlgorithms { get; set; } = { "Pair Swap", "Partial Scramble", "Inversion Mutation" };
@@ -35,6 +37,8 @@ namespace KlawiaturaAG
         public Chromosom[] CurrSelGeneration { get; set; } = new Chromosom[0];
         public List<Chromosom[]> AllGenerations { get; set; } = new List<Chromosom[]>();
 
+        private Progress<int> progress { get; set; }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void OnPropertyChanged([CallerMemberName] string? name = null)
@@ -44,6 +48,7 @@ namespace KlawiaturaAG
 
         public MainWindow()
         {
+            progress = new Progress<int>();
             InitializeComponent();
         }
 
@@ -279,9 +284,24 @@ namespace KlawiaturaAG
             OnPropertyChanged(nameof(ImprovementOverQwerty));
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private async void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            (List<Summary>, List<Chromosom[]>) output = GeneticAlgorithm.Start(settings);
+            //Re-setting the progressbar
+            currentProgressbar.Value = 0;
+
+            //setting up the progress updates
+            progress = new Progress<int>(value => currentProgressbar.Value = value);
+
+            //disabling GUI controls
+            //this.IsEnabled = false;
+
+            //calling GA asympotically, to get unpdates on the progressbar
+            (List<Summary>, List<Chromosom[]>) output = await StartTask();
+
+            //enabling GUI controls
+            //this.IsEnabled = true;
+
+            //sending Start returns to both DataGrids
             GenerationSummaries = output.Item1.ToArray();
             AllGenerations = output.Item2;
             GenerationsDataGrid.SelectedIndex = 0;
@@ -290,6 +310,19 @@ namespace KlawiaturaAG
             OnPropertyChanged(nameof(GenerationSummaries));
             OnPropertyChanged(nameof(CurrSelGeneration));
         }
+
+        public async Task<(List<Summary>, List<Chromosom[]>)> StartTask()
+        {
+            //calling Start method to execute GA
+            return await Task.Run(() => GeneticAlgorithm.Start(settings, progress));
+        }
+
+        /*
+        private void UpdateProgressBar(int value)
+        {
+            currentProgressbar.Value = value;
+        }
+        */
 
         private void PopSizeBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -424,23 +457,51 @@ namespace KlawiaturaAG
 
         private void CarryOverCBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            settings.carryoverType = CarryOverCBox.SelectedIndex;
         }
 
         private void CarryoverVariable_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            double temp;
+            if (double.TryParse(CarryoverVariable.Text, out temp))
+            {
+                settings.carryVar = temp;
+                CarryoverVariable.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
+            }
+            else
+            {
+                CarryoverVariable.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
+            }
         }
 
-        private void CheckBox_Checked_1(object sender, RoutedEventArgs e)
+        private void CullingCheckbox_Checked(object sender, RoutedEventArgs e)
         {
-
+            if (settings.culling)
+                settings.culling = false;
+            else
+                settings.culling = true;
         }
 
         private void CullingBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-
+            double temp;
+            if (double.TryParse(CullingBox.Text, out temp))
+            {
+                settings.cullingRate = temp;
+                CullingBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
+            }
+            else
+            {
+                CullingBox.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
+            }
         }
 
+        private void IsFullMemory_Checked(object sender, RoutedEventArgs e)
+        {
+            if (settings.fullMemory)
+                settings.fullMemory = false;
+            else
+                settings.fullMemory = true;
+        }
     }
 }
