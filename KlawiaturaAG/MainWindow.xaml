@@ -337,7 +337,6 @@
                 <RadioButton Grid.Row="1" x:Name="GenStopChoice" GroupName="stopChoiceRB" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" IsChecked="True" Content="pokoleniach" Checked="GenStopChoice_Checked"/>
                 <RadioButton Grid.Row="2" x:Name="EpsStopChoice" GroupName="stopChoiceRB" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="poprawa &lt;" Checked="EpsStopChoice_Checked"/>
                 <CheckBox Grid.Row="3" x:Name="IsFullMemory" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="Run FullMemory?" IsChecked="true" Checked="IsFullMemory_Checked"/>
-                <CheckBox Grid.Row="4" x:Name="IsAnimated" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" FontSize="14" Content="Animated?" Checked="IsAnimated_Checked"/>
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="5" Margin="1,1,1,1">
