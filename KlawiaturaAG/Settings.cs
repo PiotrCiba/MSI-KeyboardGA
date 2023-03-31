@@ -18,6 +18,7 @@ namespace KlawiaturaAG
 
         //re-population settings
         public int currSel { get; set; } = 0;
+        public double SelPressure { get; set; } = 1.5;
         public int currX { get; set; } = 0;
         public int currMut { get; set; } = 0;
         public double mutChance { get; set; } = 0.01;
@@ -25,6 +26,7 @@ namespace KlawiaturaAG
 
         //GA overall settings
         public bool fullMemory { get; set; } = true;
+        public bool isanimated { get; set; } = false;
         public bool currStopMode { get; set; } = false;
         public int gensToRun { get; set; } = 25;
         public double epsToStopAt { get; set; } = 0.01;

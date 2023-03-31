@@ -25,8 +25,8 @@ namespace KlawiaturaAG
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ChildrenValues { get; set; } = { 1, 2 };
         public string[] CarryoverAlgorithms { get; set; } = { "No carry-over", "Elityzm (%)"};
-        public string[] SelectionAlgorithms { get; set; } = { "Turniej", "Ruletka", "Rank", "Boltzmann (wip)" };
-        public string[] CrossoverAlgorithms { get; set; } = { "OX", "CX", "ERX", "AEX", "HGreX (shh+wip)" };
+        public string[] SelectionAlgorithms { get; set; } = { "Turniej", "Ruletka", "Rank" };
+        public string[] CrossoverAlgorithms { get; set; } = { "OX", "CX", "ERX", "AEX"};
         public string[] MutationAlgorithms { get; set; } = { "Pair Swap", "Partial Scramble", "Inversion Mutation" };
 
         public Settings settings = new Settings();
@@ -290,7 +290,7 @@ namespace KlawiaturaAG
             currentProgressbar.Value = 0;
 
             //setting up the progress updates
-            progress = new Progress<int>(value => currentProgressbar.Value = value);
+            progress = new Progress<int>( value => currentProgressbar.Value = value );
 
             //disabling GUI controls
             //this.IsEnabled = false;
@@ -385,6 +385,21 @@ namespace KlawiaturaAG
                 MutationSeverityBox.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
             }
         }
+
+        private void SelectionPressureBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            double temp;
+            if (double.TryParse(SelectionPressureBox.Text, out temp))
+            {
+                settings.SelPressure = temp;
+                SelectionPressureBox.Background = new SolidColorBrush(Color.FromArgb(85, 158, 203, 81));
+            }
+            else
+            {
+                SelectionPressureBox.Background = new SolidColorBrush(Color.FromArgb(85, 239, 132, 135));
+            }
+        }
+
         private void GenSizeStopConditionBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             int temp;
@@ -502,6 +517,14 @@ namespace KlawiaturaAG
                 settings.fullMemory = false;
             else
                 settings.fullMemory = true;
+        }
+
+        private void IsAnimated_Checked(object sender, RoutedEventArgs e)
+        {
+            if (settings.isanimated)
+                settings.isanimated = false;
+            else
+                settings.isanimated = true;
         }
     }
 }

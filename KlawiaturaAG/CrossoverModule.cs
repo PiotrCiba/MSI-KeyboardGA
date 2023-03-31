@@ -56,15 +56,6 @@ namespace KlawiaturaAG
                         output[1].layout = AlternatingEdgeCrossover(parentOne: parents[1], parentTwo: parents[2]);
                     }
                     break;
-                case 4:
-                    if (NumberOfCildren == 1)
-                        output[0].layout = HeurisitcGreedyCrossover(parentOne: parents[0], parentTwo: parents[1]);
-                    else
-                    {
-                        output[0].layout = HeurisitcGreedyCrossover(parentOne: parents[0], parentTwo: parents[1]);
-                        output[1].layout = HeurisitcGreedyCrossover(parentOne: parents[1], parentTwo: parents[2]);
-                    }
-                    break;
             }
             return output;
         }
@@ -224,50 +215,40 @@ namespace KlawiaturaAG
 
             return new string(child);
         }
-
-        public static string HeurisitcGreedyCrossover(Chromosom parentOne, Chromosom parentTwo)
-        {
-            int len = parentOne.layout.Length;
-            char[] child = new char[len];
-            
-        }
-
-        //Meybe TODO: HRndX i/lub HProX
-        //public static string HeurisitcProCrossover(Chromosom parentOne, Chromosom parentTwo)
         /*
-            {
-                // Define the subset size to select from each parent
-                int subsetSize = parent1.Length / 2;
-
-                // Select a subset of components from each parent
-                List<char> subset1 = parent1.OrderBy(c => SingleFn(c, parent1.IndexOf(c))).Take(subsetSize).ToList();
-                List<char> subset2 = parent2.OrderBy(c => SingleFn(c, parent2.IndexOf(c))).Take(subsetSize).ToList();
-
-                // Combine the selected subsets to create the offspring solution
-                List<char> offspring = new List<char>();
-                offspring.AddRange(subset1);
-
-                foreach (char c in subset2)
+                public static string HeurisitcGreedyCrossover(Chromosom parentOne, Chromosom parentTwo)
                 {
-                    if (!offspring.Contains(c))
-                    {
-                        offspring.Add(c);
-                    }
-                }
+                    //string charset = "QWERTYUIOP[]ASDFGHJKL;\'ZXCVBNM,.?";
 
-                // Add any remaining components from parent 1 to the offspring
-                foreach (char c in parent1)
-                {
-                    if (!offspring.Contains(c))
+                    int len = parentOne.layout.Length;
+                    double[,] costs = new double[len,2];
+                    double[] costDiff = new double[len];
+                    int indexes = new int[len];
+                    char[] child = new char[len];
+                    for(int i = 0; i < len; i++)
                     {
-                        offspring.Add(c);
+                        costs[i, 1] = GeneticAlgorithm.SingleFn(parentOne.layout[i], i);
+                        costs[i, 2] = GeneticAlgorithm.SingleFn(parentTwo.layout[i], i);
+                        costDiff[i] = Math.Abs(costs[i, 1] - costs[i, 2]);
+                        indexes[i] = i;
                     }
-                }
+                    Array.Sort(costDiff, indexes);
+                    for(int i = 0; i < len; i++)
+                    {
+                        if(costs[i, 1]<= costs[i, 2])
+                        {
 
-                // Convert the offspring list to a string and return it
-                return new string(offspring.ToArray());
-            }
-         */
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+                    return new string(child);
+                }
+        */
+
         private static Dictionary<char, List<char>> BuildAdjacencyList(string input)
         {
             int len = input.Length;

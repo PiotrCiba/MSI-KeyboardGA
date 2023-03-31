@@ -10,7 +10,7 @@ namespace KlawiaturaAG
 {
     public static class ParentSelection
     {
-        public static Chromosom[] Select(Chromosom[] candidates, int mode)
+        public static Chromosom[] Select(Chromosom[] candidates, int mode, double SelectionPressure)
         {
             int halflength = (int)(candidates.Length / 2);
             Chromosom[] tophalf = (from c in candidates orderby c.fitness ascending select c).ToArray()[..halflength];
@@ -18,17 +18,16 @@ namespace KlawiaturaAG
             {
                 case 0: //Turniej (full)
                     return TournamentSelectionAlgorithm(candidates);
-                case 1: //Turniej (1/2)
-                    return TournamentSelectionAlgorithm(tophalf);
-                case 2: //Ruletka (full)
+                case 1: //Ruletka (full)
                     return RoulletteSelectionAlgorithm(candidates);
-                case 3: //Ruletka (1/2)
-                    return RoulletteSelectionAlgorithm(tophalf);
+                case 2:
+                    return RankSelectionAlgorithm(candidates, SelectionPressure);
                 default:    //Turniej (full)
                     return TournamentSelectionAlgorithm(candidates);
             }
         }
-        public static Chromosom[] TournamentSelectionAlgorithm(Chromosom[] candidates)
+
+        private static Chromosom[] TournamentSelectionAlgorithm(Chromosom[] candidates)
         {
             Chromosom[] output = new Chromosom[2];
             //Randomizing 4 different indexes of candidates
@@ -56,7 +55,7 @@ namespace KlawiaturaAG
 
             return output;
         }
-        public static Chromosom[] RoulletteSelectionAlgorithm(Chromosom[] candidates)
+        private static Chromosom[] RoulletteSelectionAlgorithm(Chromosom[] candidates)
         {
             Chromosom[] output = new Chromosom[2];
             
@@ -127,6 +126,77 @@ namespace KlawiaturaAG
 
             output[0] = candidates[chosenIdexes[0]];
             output[1] = candidates[chosenIdexes[1]];
+
+            return output;
+        }
+
+        private static Chromosom[] RankSelectionAlgorithm(Chromosom[] candidates, double selPress)
+        {
+            var temp = candidates.OrderBy(o=>o.fitness).ToArray();
+            Chromosom[] output = new Chromosom[2];
+
+            //preparing the probabilities for each candidate
+            double[] probabilities = new double[candidates.Length];
+            int len = candidates.Length;
+            
+            for (int i = 0; i < len; i++)
+            {
+                double probability = 1 / len * (selPress - (2 * selPress - 2) * i / (len - 1));
+                probabilities[i] = probability;
+            }
+
+            //preparing the list of indexes based on how big the probability is
+            List<int> IndexesToRoll = new List<int>();
+
+            for (int i = 0; i < len; i++)
+            {
+                int numFieldsToAdd = (int)(probabilities[i] * 100);
+                for (int k = 0; k < numFieldsToAdd; k++)
+                {
+                    IndexesToRoll.Add(i);
+                }
+            }
+
+            //shuffling the list of indexes using Fisher-Yates algorithm
+            Random rng = new Random();
+            int n = IndexesToRoll.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                int value = IndexesToRoll[k];
+                IndexesToRoll[k] = IndexesToRoll[n];
+                IndexesToRoll[n] = value;
+            }
+
+            double total = 0;
+            foreach (var i in IndexesToRoll)
+            {
+                total += probabilities[i];
+            }
+
+            //spinning the roulette 2 times
+            HashSet<int> set = new HashSet<int>();
+            double spin;
+            double sum;
+            while (set.Count < 2)
+            {
+                spin = rng.NextDouble() * total;
+                sum = 0;
+                for (int k = 0; k < IndexesToRoll.Count; k++)
+                {
+                    sum += probabilities[IndexesToRoll[k]];
+                    if (spin < sum)
+                    {
+                        set.Add(IndexesToRoll[k]);
+                    }
+                }
+            }
+
+            int[] chosenIdexes = set.ToArray();
+
+            output[0] = temp[chosenIdexes[0]];
+            output[1] = temp[chosenIdexes[1]];
 
             return output;
         }

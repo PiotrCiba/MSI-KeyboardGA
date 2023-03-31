@@ -7,6 +7,11 @@ namespace KlawiaturaAG
     public class GeneticAlgorithm
     {
 
+        /*
+                snew double[] { 4, 2, 2, 3, 4, 5, 3, 2, 2, 4, 4, 5 },
+                new double[] { 1.5, 1, 1, 1, 3, 3, 1, 1, 1, 1.5, 3 },
+                new double[] { 4, 4, 3, 2, 5, 3, 2, 3, 4, 4 }
+         */
         //częstotliwości znaków w języku Angielskim
         public static Dictionary<char, double> charFreq = new Dictionary<char, double>() {
                 {'A', 8.4966}, {'B', 2.0720}, {'C', 4.5388}, {'D', 3.3844}, {'E', 11.1607},
@@ -15,15 +20,15 @@ namespace KlawiaturaAG
                 {'P', 3.1671}, {'Q', 0.1962}, {'R', 7.5809}, {'S', 5.7351}, {'T', 6.9509},
                 {'U', 3.6308}, {'V', 1.0074}, {'W', 1.2899}, {'X', 0.2902}, {'Y', 1.7779},
                 {'Z', 0.2722},
-                {'[', 0.01}, {']', 0.01}, {';', 0.0711},
+                {'[', 0.002}, {']', 0.002}, {';', 0.0711},
                 {'\'', 0.54}, {',', 1.3688}, {'.', 1.4511}, {'?', 0.1244}
             };
 
-        //koszty przycisków wg. metody ewaluacji Worksmana w układzie {2, 12, 11, 10}
+        //koszty przycisków wg. metody ewaluacji Worksmana w układzie {12, 11, 10}
         public static double[][] koszt = {
-                new double[] { 4, 2, 2, 3, 4, 5, 3, 2, 2, 4, 4, 5 },
+                new double[] { 4, 2, 2, 3, 4, 4, 3, 2, 2, 4, 5, 5 },
                 new double[] { 1.5, 1, 1, 1, 3, 3, 1, 1, 1, 1.5, 3 },
-                new double[] { 4, 4, 3, 2, 5, 3, 2, 3, 4, 4 }
+                new double[] { 4, 4, 3, 2, 4, 4, 2, 3, 4, 4 }
         };
 
         public static (List<Summary>, List<Chromosom[]>) Start(Settings s, IProgress<int> progress)
@@ -88,7 +93,7 @@ namespace KlawiaturaAG
                 while (children.Count < s.popSize)
                 {
                     //parentSelection, from breedingPop
-                    Chromosom[] couple = ParentSelection.Select(carryAndPop.breeders, s.currSel);
+                    Chromosom[] couple = ParentSelection.Select(carryAndPop.breeders, s.currSel, s.SelPressure);
 
                     //crossover operator, from selected parents
                     Chromosom[] childrenTemp = CrossoverModule.Select(couple, s.currX, s.childNumber);
@@ -132,15 +137,9 @@ namespace KlawiaturaAG
                 GenSummaries.Add(currGenSummary);
 
                 //parents = children
-                Parents = children.ToArray();
+                Parents = children.OrderBy(o=>o.fitness).ToArray();
 
                 int report = 0;
-
-                System.Diagnostics.Debug.Write("gens = " + (int)(((double)gen / s.gensToRun) * 100));
-                Summary[] tmpoo = GenSummaries.TakeLast(2).ToArray();
-                double cEps = (tmpoo[0].BestFitness - tmpoo[1].BestFitness) / tmpoo[1].BestFitness;
-                //claculate the report
-                System.Diagnostics.Debug.WriteLine("; EPS = " + (int)((s.epsToStopAt / cEps) * 100));
 
                 if (!s.currStopMode)
                 {
@@ -158,9 +157,8 @@ namespace KlawiaturaAG
                     //stop at set improvement
                     Summary[] temp = GenSummaries.TakeLast(2).ToArray();
                     double currentEps = (temp[0].BestFitness - temp[1].BestFitness) / temp[1].BestFitness;
-
                     //calculate the report
-                    report = (int)((s.epsToStopAt / cEps) * 100);
+                    report = (int)((s.epsToStopAt / currentEps) * 100);
                     if (report < 0)
                         report = 0;
 
