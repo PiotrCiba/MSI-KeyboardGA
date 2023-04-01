@@ -20,7 +20,7 @@ namespace KlawiaturaAG
         public bool isShowingCost { get; set; } = false;
         public string[] Layouts { get; set; } = { "QWERTY", "Dvorak", "ARENSITO", "Colemak", "Workman", "<Selected>" };
 
-        public const double QwertyValue = 251.43964999999992;
+        public const double QwertyValue = 243.50242999999992;
         public double CurrLayoutEvaluation { get; set; } = 0;
         public double ImprovementOverQwerty { get; set; } = 0;
         public int[] ChildrenValues { get; set; } = { 1, 2 };
@@ -525,6 +525,12 @@ namespace KlawiaturaAG
                 settings.isanimated = false;
             else
                 settings.isanimated = true;
+        }
+
+        private void DisplayGraph_Click(object sender, RoutedEventArgs e)
+        {
+            FitnessGraph window2 = new FitnessGraph(GenerationSummaries);
+            window2.Show();
         }
     }
 }
