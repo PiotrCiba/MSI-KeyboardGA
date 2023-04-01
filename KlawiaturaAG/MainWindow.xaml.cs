@@ -183,9 +183,9 @@ namespace KlawiaturaAG
         public void ShowCosts()
         {
             double[][] koszt = {
-                new double[] { 4, 2, 2, 3, 4, 5, 3, 2, 2, 4, 4, 5 },
+                new double[] { 4, 2, 2, 3, 4, 4, 3, 2, 2, 4, 5, 5 },
                 new double[] { 1.5, 1, 1, 1, 3, 3, 1, 1, 1, 1.5, 3 },
-                new double[] { 4, 4, 3, 2, 5, 3, 2, 3, 4, 4 }
+                new double[] { 4, 4, 3, 2, 4, 4, 2, 3, 4, 4 }
             };
 
             SolidColorBrush one = new SolidColorBrush(Color.FromRgb(158, 203, 81));
@@ -215,7 +215,7 @@ namespace KlawiaturaAG
             Key_T.Content = koszt[0][4];
             Rect_T.Fill = four;
             Key_Y.Content = koszt[0][5];
-            Rect_Y.Fill = five;
+            Rect_Y.Fill = four;
             Key_U.Content = koszt[0][6];
             Rect_U.Fill = three;
             Key_I.Content = koszt[0][7];
@@ -225,7 +225,7 @@ namespace KlawiaturaAG
             Key_P.Content = koszt[0][9];
             Rect_P.Fill = four;
             Key_10.Content = koszt[0][10];
-            Rect_10.Fill = four;
+            Rect_10.Fill = five;
             Key_11.Content = koszt[0][11];
             Rect_11.Fill = five;
 
@@ -263,9 +263,9 @@ namespace KlawiaturaAG
             Key_V.Content = koszt[2][3];
             Rect_V.Fill = two;
             Key_B.Content = koszt[2][4];
-            Rect_B.Fill = five;
+            Rect_B.Fill = four;
             Key_N.Content = koszt[2][5];
-            Rect_N.Fill = three;
+            Rect_N.Fill = four;
             Key_M.Content = koszt[2][6];
             Rect_M.Fill = two;
             Key_30.Content = koszt[2][7];

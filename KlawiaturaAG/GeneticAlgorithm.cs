@@ -124,20 +124,20 @@ namespace KlawiaturaAG
                     children.Remove(children.Last());
                 }
 
+                //parents = children
+                Parents = children.OrderBy(o => o.fitness).ToArray();
+
                 //if fullmemory, add children to Pokolenia
                 if (s.fullMemory)
                 {
-                    Pokolenia.Add(children.ToArray());
+                    Pokolenia.Add(Parents);
                 }
                 //summary prep, add to GenSummaries
-                fitnesses = (from c in children orderby c.fitness select c.fitness);
+                fitnesses = (from p in Parents select p.fitness);
                 bestFit = fitnesses.First();
                 avgFit = fitnesses.Average();
                 currGenSummary = new Summary(gen, bestFit, avgFit);
                 GenSummaries.Add(currGenSummary);
-
-                //parents = children
-                Parents = children.OrderBy(o=>o.fitness).ToArray();
 
                 int report = 0;
 
