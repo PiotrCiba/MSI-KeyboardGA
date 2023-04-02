@@ -10,10 +10,7 @@
         Title="FitnessGraph" Height="450" Width="600">
     
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="9*"/>
-            <RowDefinition Height="1*"/>
-        </Grid.RowDefinitions>
-        <WpfPlot x:Name="FitnessPlot" Grid.Row="0"/>
+        
+        <WpfPlot x:Name="FitnessPlot"/>
     </Grid>
 </Window>

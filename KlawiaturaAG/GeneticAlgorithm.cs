@@ -61,7 +61,7 @@ namespace KlawiaturaAG
 
             //do-while control variables breakcondition to exit, get to count generations (for generation number exit)
             bool breakCondition = false;
-            int gensToMaintainEps = 10;
+            int gensToMaintainEps = 100;
             int gen = 0;
 
             //creating the first Summary for GenSummaries
@@ -173,7 +173,7 @@ namespace KlawiaturaAG
                     else
                     {
                         //if the low eps streak is broken, reset the counter
-                        gensToMaintainEps = 10;
+                        gensToMaintainEps = 100;
                     }
 
                 }

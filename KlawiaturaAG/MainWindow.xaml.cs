@@ -304,9 +304,9 @@ namespace KlawiaturaAG
             //sending Start returns to both DataGrids
             GenerationSummaries = output.Item1.ToArray();
             AllGenerations = output.Item2;
-            GenerationsDataGrid.SelectedIndex = 0;
+            GenerationsDataGrid.SelectedIndex = GenerationSummaries.Length-1;
             ChromosomeDataGrid.SelectedIndex = 0;
-            CurrSelGeneration = AllGenerations.First();
+            CurrSelGeneration = AllGenerations.Last();
             OnPropertyChanged(nameof(GenerationSummaries));
             OnPropertyChanged(nameof(CurrSelGeneration));
         }
@@ -529,8 +529,11 @@ namespace KlawiaturaAG
 
         private void DisplayGraph_Click(object sender, RoutedEventArgs e)
         {
-            FitnessGraph window2 = new FitnessGraph(GenerationSummaries);
-            window2.Show();
+            if (GenerationSummaries.Length>0)
+            {
+                FitnessGraph window2 = new FitnessGraph(GenerationSummaries);
+                window2.Show();
+            }
         }
     }
 }
